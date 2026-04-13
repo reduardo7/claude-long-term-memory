@@ -1,0 +1,39 @@
+{
+  "_comment": "Merge these hooks into your .claude/settings.json (or ~/.claude/settings.json for system-level). Adjust the path prefix if hooks are not at $CLAUDE_PROJECT_DIR/.claude/hooks/.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_pre_agent_reminder.py || true"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_stop_reminder.py || true",
+            "statusMessage": "Memory reminder"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_search_reminder.py || true"
+          }
+        ]
+      }
+    ]
+  }
+}
