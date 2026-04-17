@@ -1,6 +1,17 @@
 # claude-long-term-memory
 
-A drop-in long-term memory system for Claude Code projects. Captures session decisions, errors, and discoveries in raw daily logs, then distills them into a curated Obsidian vault via the `/memory-digest` command.
+A long-term memory system for Claude Code. Captures session decisions, errors, and discoveries in raw daily logs, then distills them into a curated Obsidian vault via the `/memory-digest` command.
+
+### Why this approach is different
+
+Most memory systems store knowledge **per-user**, in a global location on the developer's machine. This system stores memory **inside the repository** — in `docs/vault/` — which means:
+
+- **Shared across the team**: every developer who clones the repo inherits the accumulated context — past decisions, known pitfalls, architectural rationale
+- **Versioned in git**: the knowledge base evolves alongside the code, and its history is fully auditable
+- **Obsidian-compatible**: the vault uses wikilinks and bidirectional links, making it navigable as a knowledge graph — not just a flat log dump
+- **Gets smarter over time**: each session adds context; Claude's answers improve as the vault grows, for everyone on the team
+
+This makes the memory a **project asset**, not a personal one.
 
 ---
 
@@ -10,7 +21,7 @@ A drop-in long-term memory system for Claude Code projects. Captures session dec
 Session work
   └─→ memory/daily/<timestamp>.md   (raw, ephemeral — Claude writes in real time)
 
-/memory-digest  (orchestrator, Opus model)
+/memory-digest  (orchestrator, Sonnet model)
   ├─→ [each daily log] → memory-digest-daily sub-agent
   │       └─→ extracts durable knowledge → docs/vault/...
   │       └─→ deletes memory/daily/<ts>.md
@@ -32,9 +43,79 @@ docs/vault/  (curated, permanent, cross-linked Obsidian vault)
 
 ---
 
-## Setup
+## Installation
 
-### Step 1 — Run the install script
+### Option A — Plugin (recommended)
+
+Install the plugin with a single command inside Claude Code:
+
+```
+/plugin install github.com/reduardo7/claude-long-term-memory
+```
+
+This installs the `/memory-digest` slash command, the three sub-agents (`memory-search`, `memory-digest-daily`, `memory-digest-spec`), and wires the `UserPromptSubmit` hook automatically.
+
+**After installing the plugin**, complete the project setup:
+
+#### Step 1 — Initialize the project structure
+
+```bash
+bash ~/.claude/plugins/long-term-memory/install.sh /path/to/your-project
+```
+
+This creates `memory/daily/`, `docs/vault/`, and copies the operating instructions into your project. Existing files are never overwritten.
+
+#### Step 2 — Add the remaining hooks to `.claude/settings.json`
+
+The plugin wires `UserPromptSubmit` automatically. Add the other two hooks manually:
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_pre_agent_reminder.py || true"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_stop_reminder.py || true",
+            "statusMessage": "Memory reminder"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+> The hook scripts are copied into your project's `.claude/hooks/` by `install.sh`.
+
+#### Step 3 — Add the memory section to `CLAUDE.md`
+
+```bash
+cat ~/.claude/plugins/long-term-memory/CLAUDE.md.snippet.md >> /path/to/your-project/CLAUDE.md
+```
+
+#### Step 4 — Customize for your project
+
+See [Customization](#customization) below.
+
+---
+
+### Option B — Manual installation
+
+#### Step 1 — Run the install script
 
 ```bash
 bash /path/to/claude-long-term-memory/install.sh /path/to/your-project
@@ -43,7 +124,7 @@ bash /path/to/claude-long-term-memory/install.sh /path/to/your-project
 This creates the required directories and copies all files into your project. Existing files are never overwritten.
 
 <details>
-<summary>Manual installation (alternative)</summary>
+<summary>Manual file-by-file copy (alternative)</summary>
 
 ```bash
 # From your project root
@@ -72,7 +153,7 @@ cp /path/to/claude-long-term-memory/.claude/hooks/memory_pre_agent_reminder.py  
 ```
 </details>
 
-### Step 2 — Add hooks to `.claude/settings.json`
+#### Step 2 — Add hooks to `.claude/settings.json`
 
 Merge the following into your project's `.claude/settings.json`. The full reference is also in `settings-hooks.json`.
 
@@ -119,23 +200,15 @@ Merge the following into your project's `.claude/settings.json`. The full refere
 
 > For system-level installation (applies to all projects), use `~/.claude/settings.json` and replace `$CLAUDE_PROJECT_DIR/.claude/hooks/` with the absolute path to your hooks.
 
-### Step 3 — Add the memory section to `CLAUDE.md`
-
-Append `CLAUDE.md.snippet.md` to your project's `CLAUDE.md`:
+#### Step 3 — Add the memory section to `CLAUDE.md`
 
 ```bash
 cat /path/to/claude-long-term-memory/CLAUDE.md.snippet.md >> /path/to/your-project/CLAUDE.md
 ```
 
-This ensures Claude always has the memory instructions loaded at the start of every session.
+#### Step 4 — Customize for your project
 
-### Step 4 — Customize for your project
-
-**Vault structure:** Edit `docs/vault/Home.md` to reflect your project's sections and documents.
-
-**Conditional docs:** Edit `.claude/commands/conditional_docs.md` — add entries that map your project's task types to the specific vault documents Claude should read before working on them.
-
-**Skills table:** Open `.claude/agents/memory-digest-daily.md` and `.claude/agents/memory-digest-spec.md`. Find the **Skills table** in Step 6 and replace the generic entries with your project's actual skill files (`.claude/skills/*/SKILL.md`).
+See [Customization](#customization) below.
 
 ---
 
@@ -178,31 +251,6 @@ Agent(subagent_type: "memory-search", prompt: "<task description>")
 
 ---
 
-## File reference
-
-| File | Purpose |
-|------|---------|
-| `memory/memory.md` | Operating instructions for Claude — what to record, when, and in what format |
-| `memory/daily/*.md` | Raw session logs — ephemeral, deleted after `/memory-digest` |
-| `docs/vault/Home.md` | Vault master index — update as vault grows |
-| `docs/vault/Claude/Memory.md` | Memory system documentation in the vault |
-| `docs/vault/Decisiones/Index.md` | ADR index — updated after every architectural decision |
-| `docs/vault/Desarrollo/Obsidian Vault.md` | Vault writing conventions (naming, wikilinks) |
-| `.claude/commands/memory-digest.md` | `/memory-digest` slash command (orchestrator) |
-| `.claude/commands/conditional_docs.md` | Maps task types to vault documents — customize per project |
-| `.claude/agents/memory-digest-daily.md` | Sub-agent: distills one daily log → vault + skills |
-| `.claude/agents/memory-digest-spec.md` | Sub-agent: distills one spec file → vault + skills |
-| `.claude/agents/memory-search.md` | Sub-agent: retrieves vault docs before tasks |
-| `.claude/rules/memory.md` | Claude Rule: fires when memory/ or memory system files are touched |
-| `.claude/rules/obsidian-vault.md` | Claude Rule: fires when docs/vault/ files are touched |
-| `.claude/hooks/memory_search_reminder.py` | UserPromptSubmit hook: reminds Claude to search vault |
-| `.claude/hooks/memory_stop_reminder.py` | Stop hook: reminds Claude to update session log |
-| `.claude/hooks/memory_pre_agent_reminder.py` | PreToolUse[Agent] hook: reminds Claude to pass vault context |
-| `settings-hooks.json` | Hook configuration snippet — merge into `.claude/settings.json` |
-| `CLAUDE.md.snippet.md` | CLAUDE.md snippet — append to your project's CLAUDE.md |
-
----
-
 ## Customization
 
 ### Vault language
@@ -219,6 +267,14 @@ The default vault path is `docs/vault/`. To change it, update all references in:
 - `.claude/rules/obsidian-vault.md`
 - `CLAUDE.md.snippet.md`
 
+### Conditional docs
+
+Edit `.claude/commands/conditional_docs.md` — add entries that map your project's task types to the specific vault documents Claude should read before working on them.
+
+### Skills table
+
+Open `.claude/agents/memory-digest-daily.md` and `.claude/agents/memory-digest-spec.md`. Find the **Skills table** in Step 6 and replace the generic entries with your project's actual skill files (`.claude/skills/*/SKILL.md`).
+
 ### Specs pipeline
 
 The specs pipeline (`specs/*.md` → `memory-digest-spec`) is optional. If you don't use spec files, remove steps 3 and 4 from `.claude/commands/memory-digest.md`.
@@ -229,8 +285,43 @@ Hooks use `uv run` by default. To use plain `python3` instead, replace `uv run` 
 
 ---
 
+## File reference
+
+| File | Purpose |
+|------|---------|
+| `.claude-plugin/plugin.json` | Plugin manifest — enables `/plugin install` |
+| `skills/memory-digest/SKILL.md` | `/memory-digest` slash command (plugin format) |
+| `.claude-plugin/marketplace.json` | Plugin marketplace registration |
+| `memory/memory.md` | Operating instructions for Claude — what to record, when, and in what format |
+| `memory/daily/*.md` | Raw session logs — ephemeral, deleted after `/memory-digest` |
+| `docs/vault/Home.md` | Vault master index — update as vault grows |
+| `docs/vault/Claude/Memory.md` | Memory system documentation in the vault |
+| `docs/vault/Decisiones/Index.md` | ADR index — updated after every architectural decision |
+| `docs/vault/Desarrollo/Obsidian Vault.md` | Vault writing conventions (naming, wikilinks) |
+| `.claude/commands/memory-digest.md` | `/memory-digest` slash command (legacy format) |
+| `.claude/commands/conditional_docs.md` | Maps task types to vault documents — customize per project |
+| `.claude/agents/memory-digest-daily.md` | Sub-agent: distills one daily log → vault + skills |
+| `.claude/agents/memory-digest-spec.md` | Sub-agent: distills one spec file → vault + skills |
+| `.claude/agents/memory-search.md` | Sub-agent: retrieves vault docs before tasks |
+| `.claude/rules/memory.md` | Claude Rule: fires when memory/ or memory system files are touched |
+| `.claude/rules/obsidian-vault.md` | Claude Rule: fires when docs/vault/ files are touched |
+| `.claude/hooks/memory_search_reminder.py` | UserPromptSubmit hook: reminds Claude to search vault |
+| `.claude/hooks/memory_stop_reminder.py` | Stop hook: reminds Claude to update session log |
+| `.claude/hooks/memory_pre_agent_reminder.py` | PreToolUse[Agent] hook: reminds Claude to pass vault context |
+| `settings-hooks.json` | Hook configuration snippet — merge into `.claude/settings.json` |
+| `CLAUDE.md.snippet.md` | CLAUDE.md snippet — append to your project's CLAUDE.md |
+| `install.sh` | Bootstrap script — creates directories and copies files into your project |
+
+---
+
 ## Requirements
 
-- Claude Code with hooks support
-- `uv` installed (for running Python hooks) — or adapt hooks to use `python3`
+- Claude Code with hooks and plugin support
 - Python 3.11+
+- [`uv`](https://docs.astral.sh/uv/getting-started/installation/) — used to run the Python hook scripts
+
+  ```bash
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  ```
+
+  > If you prefer not to install `uv`, replace `uv run` with `python3` in every hook command inside `.claude/settings.json`.
