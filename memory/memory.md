@@ -152,7 +152,7 @@ Use `Edit` to append to the file without rewriting it.
 Once a day (or when the user invokes it), the `/memory-digest` command:
 
 1. Reads all files in `memory/daily/*.md`.
-2. Processes each one **sequentially** with an **Opus model** sub-agent to extract durable knowledge.
+2. Processes each one **sequentially** with a **Sonnet model** sub-agent to extract durable knowledge.
 3. Promotes each learning to the **correct location in the vault** (`docs/vault/`), creating or updating existing files.
 4. Ensures **bidirectional linking** with related vault documents.
 5. Updates `docs/vault/Home.md` and `.claude/commands/conditional_docs.md` (if it exists) if new documents appear.
@@ -183,7 +183,7 @@ See `.claude/commands/memory-digest.md` for the complete procedure.
 
 ```
 session → memory/daily/<ts>.md  (raw, ephemeral)
-               ↓  /memory-digest (Opus, sequential)
+               ↓  /memory-digest (Sonnet, sequential)
            docs/vault/...                 (curated, permanent, linked)
                ↓
            memory/daily/<ts>.md DELETED

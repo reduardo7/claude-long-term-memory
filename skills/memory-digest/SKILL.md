@@ -1,6 +1,9 @@
 ---
+name: memory-digest
 description: Digest daily memory files into long-term knowledge in the vault.
+version: 1.0.0
 model: sonnet
+allowed-tools: ["Glob", "Grep", "Read", "Edit", "Write", "Bash", "Agent"]
 ---
 
 Processes the raw session logs (`memory/daily/*.md`) and undigested specs (`specs/*.md`), and promotes durable knowledge to the Obsidian vault (`docs/vault/`).

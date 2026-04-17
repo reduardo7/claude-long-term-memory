@@ -5,11 +5,17 @@ tools:
   - Glob
   - Grep
   - Read
-  - Edit
-  - Write
+  - Edit(docs/vault/**)
+  - Edit(.claude/rules/**)
+  - Edit(.claude/skills/**)
+  - Edit(memory/daily/**)
+  - Write(docs/vault/**)
+  - Write(.claude/rules/**)
+  - Write(.claude/skills/**)
+  - Write(memory/daily/**)
   - WebFetch
   - WebSearch
-model: opus
+model: sonnet
 ---
 
 You are a knowledge distillation specialist. Your job is to read a single raw session log from `memory/daily/` and extract every piece of durable knowledge it contains, then write it to the correct location in the Obsidian vault (`docs/vault/`).

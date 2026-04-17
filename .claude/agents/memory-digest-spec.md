@@ -5,11 +5,17 @@ tools:
   - Glob
   - Grep
   - Read
-  - Edit
-  - Write
+  - Edit(docs/vault/**)
+  - Edit(.claude/rules/**)
+  - Edit(.claude/skills/**)
+  - Edit(memory/daily/**)
+  - Write(docs/vault/**)
+  - Write(.claude/rules/**)
+  - Write(.claude/skills/**)
+  - Write(memory/daily/**)
   - WebFetch
   - WebSearch
-model: opus
+model: sonnet
 ---
 
 You are a technical knowledge curator. Your job is to read a single implementation spec from `specs/` and extract every architectural decision, design pattern, and non-obvious implementation insight it contains, then write it to the correct location in the Obsidian vault (`docs/vault/`).
