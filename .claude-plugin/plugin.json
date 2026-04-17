@@ -1,0 +1,26 @@
+{
+  "name": "long-term-memory",
+  "description": "Project-scoped memory system for Claude Code. Unlike per-user memory tools, knowledge lives inside the repository — shared across the team, versioned in git, and stored as an Obsidian vault. Captures session decisions, errors, and discoveries in daily logs, then distills them via /memory-digest. The vault grows over time, making Claude's responses progressively more accurate for everyone on the team.",
+  "author": {
+    "name": "Eduardo Cuomo",
+    "url": "https://github.com/reduardo7"
+  },
+  "requirements": {
+    "python": ">=3.11",
+    "tools": [
+      {
+        "name": "uv",
+        "description": "Python package manager used to run the hook scripts",
+        "install": "curl -LsSf https://astral.sh/uv/install.sh | sh",
+        "docs": "https://docs.astral.sh/uv/getting-started/installation/"
+      }
+    ]
+  },
+  "hooks": {
+    "userPromptSubmit": {
+      "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_search_reminder.py\" || true",
+      "timeout": 5000,
+      "status": "Searching memory vault..."
+    }
+  }
+}
