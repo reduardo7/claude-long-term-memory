@@ -17,10 +17,16 @@
     ]
   },
   "hooks": {
-    "userPromptSubmit": {
-      "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_search_reminder.py\" || true",
-      "timeout": 5000,
-      "status": "Searching memory vault..."
-    }
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_search_reminder.py\" || true",
+            "timeout": 5000
+          }
+        ]
+      }
+    ]
   }
 }
