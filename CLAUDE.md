@@ -73,6 +73,10 @@ Work session → memory/daily/YYYY-MM-DD_HHMMSS.md   (raw log)
 
 ### Hooks
 
+**When adding or modifying hooks, always update BOTH files:**
+- `.claude-plugin/plugin.json` — used when installed via `/plugin install` (paths use `${CLAUDE_PLUGIN_ROOT}`)
+- `settings-hooks.json` — used for manual installs (paths use `$CLAUDE_PROJECT_DIR`)
+
 Four Python hooks fire on Claude Code events:
 
 - `memory_search_reminder.py` — `UserPromptSubmit`: suggests invoking `memory-search` before non-trivial tasks
