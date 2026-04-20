@@ -75,7 +75,7 @@ Work session → memory/daily/YYYY-MM-DD_HHMMSS.md   (raw log)
 
 **When adding or modifying hooks, always update BOTH files:**
 - `.claude-plugin/plugin.json` — used when installed via `/plugin install` (paths use `${CLAUDE_PLUGIN_ROOT}`)
-- `settings-hooks.json` — used for manual installs (paths use `$CLAUDE_PROJECT_DIR`)
+- `settings-hooks.json` — hook config template for both install methods; uses `${CLAUDE_PLUGIN_ROOT}` by default (plugin install); for manual install replace with `$CLAUDE_PROJECT_DIR`
 
 Six Python hooks fire on Claude Code events:
 

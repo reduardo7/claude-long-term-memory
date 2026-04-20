@@ -1,5 +1,5 @@
 {
-  "_comment": "Merge these hooks into your .claude/settings.json (or ~/.claude/settings.json for system-level). Adjust the path prefix if hooks are not at $CLAUDE_PROJECT_DIR/.claude/hooks/.",
+  "_comment": "Merge these hooks into your ~/.claude/settings.json (user-level). For plugin installs, hooks live at ${CLAUDE_PLUGIN_ROOT}/.claude/hooks/ — replace that variable with the actual plugin path if your Claude Code version does not expand it (e.g. /Users/YOU/.claude/plugins/marketplaces/claude-ltm/.claude/hooks/). For manual installs (install.sh), replace ${CLAUDE_PLUGIN_ROOT} with $CLAUDE_PROJECT_DIR.",
   "hooks": {
     "PreCompact": [
       {
@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_pre_compact_reminder.py || true",
+            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_pre_compact_reminder.py\" || true",
             "statusMessage": "Saving memory before compact"
           }
         ]
@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_post_compact_reminder.py || true",
+            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_post_compact_reminder.py\" || true",
             "statusMessage": "Reloading base docs after compact"
           }
         ]
@@ -31,7 +31,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_pre_agent_reminder.py || true"
+            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_pre_agent_reminder.py\" || true"
           }
         ]
       }
@@ -42,7 +42,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_stop_reminder.py || true",
+            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_stop_reminder.py\" || true",
             "statusMessage": "Memory reminder"
           }
         ]
@@ -54,11 +54,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_search_reminder.py || true"
+            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_search_reminder.py\" || true"
           },
           {
             "type": "command",
-            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_log_reminder.py || true"
+            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_log_reminder.py\" || true"
           }
         ]
       }

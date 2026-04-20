@@ -33,13 +33,16 @@ Session work
 docs/vault/  (curated, permanent, cross-linked Obsidian vault)
 ```
 
-**Three hooks** reinforce the system automatically:
+**Six hooks** reinforce the system automatically:
 
 | Hook | Trigger | Effect |
 |------|---------|--------|
 | `memory_search_reminder.py` | Every user prompt | Reminds Claude to invoke `memory-search` before non-trivial tasks |
+| `memory_log_reminder.py` | Every user prompt | Reminds Claude to create/update the daily log before responding |
 | `memory_pre_agent_reminder.py` | Before any sub-agent | Reminds Claude to include vault context in the sub-agent prompt |
 | `memory_stop_reminder.py` | End of every response | Reminds Claude to log decisions/errors before the session closes |
+| `memory_pre_compact_reminder.py` | Before context compaction | Reminds Claude to persist the daily log before history is discarded |
+| `memory_post_compact_reminder.py` | After context compaction | Reminds Claude to re-read base vault documents to restore context |
 
 ---
 
@@ -53,7 +56,7 @@ Install the plugin with a single command inside Claude Code:
 /plugin install github.com/reduardo7/claude-long-term-memory
 ```
 
-This installs the `/memory-digest` slash command, the three sub-agents (`memory-search`, `memory-digest-daily`, `memory-digest-spec`), and wires the `UserPromptSubmit` hook automatically.
+This installs the `/memory-digest` slash command, the three sub-agents (`memory-search`, `memory-digest-daily`, `memory-digest-spec`), and wires the `UserPromptSubmit` hooks automatically.
 
 **After installing the plugin**, complete the project setup:
 
@@ -65,9 +68,9 @@ bash ~/.claude/plugins/long-term-memory/install.sh /path/to/your-project
 
 This creates `memory/daily/`, `docs/vault/`, and copies the operating instructions into your project. Existing files are never overwritten.
 
-#### Step 2 — Add the remaining hooks to `.claude/settings.json`
+#### Step 2 — Add the remaining hooks to `~/.claude/settings.json`
 
-The plugin wires `UserPromptSubmit` automatically. Add the other two hooks manually:
+The plugin wires `UserPromptSubmit` automatically. Add the other four hooks manually. Replace `${CLAUDE_PLUGIN_ROOT}` with the actual plugin path if your Claude Code version does not expand it (e.g. `/Users/YOU/.claude/plugins/marketplaces/claude-ltm`):
 
 ```json
 {
@@ -78,7 +81,7 @@ The plugin wires `UserPromptSubmit` automatically. Add the other two hooks manua
         "hooks": [
           {
             "type": "command",
-            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_pre_agent_reminder.py || true"
+            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_pre_agent_reminder.py\" || true"
           }
         ]
       }
@@ -89,8 +92,32 @@ The plugin wires `UserPromptSubmit` automatically. Add the other two hooks manua
         "hooks": [
           {
             "type": "command",
-            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_stop_reminder.py || true",
+            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_stop_reminder.py\" || true",
             "statusMessage": "Memory reminder"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_pre_compact_reminder.py\" || true",
+            "statusMessage": "Saving memory before compact"
+          }
+        ]
+      }
+    ],
+    "PostCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_post_compact_reminder.py\" || true",
+            "statusMessage": "Reloading base docs after compact"
           }
         ]
       }
@@ -99,7 +126,7 @@ The plugin wires `UserPromptSubmit` automatically. Add the other two hooks manua
 }
 ```
 
-> The hook scripts are copied into your project's `.claude/hooks/` by `install.sh`.
+> The full reference with all hooks is in `settings-hooks.json`.
 
 #### Step 3 — Add the memory section to `CLAUDE.md`
 
@@ -148,14 +175,17 @@ cp /path/to/claude-long-term-memory/.claude/rules/memory.md                     
 cp /path/to/claude-long-term-memory/.claude/rules/obsidian-vault.md               ./.claude/rules/obsidian-vault.md
 
 cp /path/to/claude-long-term-memory/.claude/hooks/memory_search_reminder.py       ./.claude/hooks/memory_search_reminder.py
+cp /path/to/claude-long-term-memory/.claude/hooks/memory_log_reminder.py          ./.claude/hooks/memory_log_reminder.py
 cp /path/to/claude-long-term-memory/.claude/hooks/memory_stop_reminder.py         ./.claude/hooks/memory_stop_reminder.py
 cp /path/to/claude-long-term-memory/.claude/hooks/memory_pre_agent_reminder.py    ./.claude/hooks/memory_pre_agent_reminder.py
+cp /path/to/claude-long-term-memory/.claude/hooks/memory_pre_compact_reminder.py  ./.claude/hooks/memory_pre_compact_reminder.py
+cp /path/to/claude-long-term-memory/.claude/hooks/memory_post_compact_reminder.py ./.claude/hooks/memory_post_compact_reminder.py
 ```
 </details>
 
 #### Step 2 — Add hooks to `.claude/settings.json`
 
-Merge the following into your project's `.claude/settings.json`. The full reference is also in `settings-hooks.json`.
+Merge the following into your project's `.claude/settings.json`. The full reference is also in `settings-hooks.json` (replace `${CLAUDE_PLUGIN_ROOT}` with `$CLAUDE_PROJECT_DIR` for manual installs):
 
 ```json
 {
@@ -183,6 +213,30 @@ Merge the following into your project's `.claude/settings.json`. The full refere
         ]
       }
     ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_pre_compact_reminder.py || true",
+            "statusMessage": "Saving memory before compact"
+          }
+        ]
+      }
+    ],
+    "PostCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_post_compact_reminder.py || true",
+            "statusMessage": "Reloading base docs after compact"
+          }
+        ]
+      }
+    ],
     "UserPromptSubmit": [
       {
         "matcher": "",
@@ -190,6 +244,10 @@ Merge the following into your project's `.claude/settings.json`. The full refere
           {
             "type": "command",
             "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_search_reminder.py || true"
+          },
+          {
+            "type": "command",
+            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_log_reminder.py || true"
           }
         ]
       }
@@ -306,9 +364,12 @@ Hooks use `uv run` by default. To use plain `python3` instead, replace `uv run` 
 | `.claude/rules/memory.md` | Claude Rule: fires when memory/ or memory system files are touched |
 | `.claude/rules/obsidian-vault.md` | Claude Rule: fires when docs/vault/ files are touched |
 | `.claude/hooks/memory_search_reminder.py` | UserPromptSubmit hook: reminds Claude to search vault |
-| `.claude/hooks/memory_stop_reminder.py` | Stop hook: reminds Claude to update session log |
+| `.claude/hooks/memory_log_reminder.py` | UserPromptSubmit hook: reminds Claude to update daily log before responding |
 | `.claude/hooks/memory_pre_agent_reminder.py` | PreToolUse[Agent] hook: reminds Claude to pass vault context |
-| `settings-hooks.json` | Hook configuration snippet — merge into `.claude/settings.json` |
+| `.claude/hooks/memory_stop_reminder.py` | Stop hook: reminds Claude to update session log |
+| `.claude/hooks/memory_pre_compact_reminder.py` | PreCompact hook: reminds Claude to persist daily log before compaction |
+| `.claude/hooks/memory_post_compact_reminder.py` | PostCompact hook: reminds Claude to re-read vault after compaction |
+| `settings-hooks.json` | Hook configuration template — merge into `~/.claude/settings.json` |
 | `CLAUDE.md.snippet.md` | CLAUDE.md snippet — append to your project's CLAUDE.md |
 | `install.sh` | Bootstrap script — creates directories and copies files into your project |
 
