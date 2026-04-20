@@ -33,6 +33,7 @@ memory/
 │   └── memory-digest-spec.md    ← sub-agent: processes one specs/ file
 ├── hooks/
 │   ├── memory_search_reminder.py  ← UserPromptSubmit: reminder to invoke memory-search
+│   ├── memory_log_reminder.py     ← UserPromptSubmit: proactive reminder to create/update daily log
 │   ├── memory_pre_agent_reminder.py      ← PreToolUse[Agent]: reminder when launching sub-agents
 │   └── memory_stop_reminder.py    ← Stop: contextual reminder to record in memory/daily/
 └── rules/
@@ -194,7 +195,7 @@ The memory system requires **3 complementary activation components** — all thr
 |---|-----------|-----------------|------|
 | 1 | `CLAUDE.md` — "Long-Term Memory" section (inline) | Every session — CLAUDE.md always loads | Guarantees activation regardless of which domain is being worked on |
 | 2 | `.claude/rules/memory.md` | When touching `memory/**/*` or `memory-digest` files | Loads detailed instructions and mandatory reading when working on the memory system itself |
-| 3 | Hooks (`memory_search_reminder.py`, `memory_pre_agent_reminder.py`, `memory_stop_reminder.py`) | Prompts, agent launches, end of response | Real-time reminders that reinforce the consultation and recording behavior |
+| 3 | Hooks (`memory_search_reminder.py`, `memory_log_reminder.py`, `memory_pre_agent_reminder.py`, `memory_stop_reminder.py`) | Prompts, agent launches, end of response | Real-time reminders that reinforce the consultation and recording behavior |
 
 ---
 
@@ -203,6 +204,7 @@ The memory system requires **3 complementary activation components** — all thr
 | Hook | Type | Behavior |
 |------|------|----------|
 | `.claude/hooks/memory_search_reminder.py` | `UserPromptSubmit` | Injects a reminder in each user prompt to invoke `memory-search` before non-trivial tasks |
+| `.claude/hooks/memory_log_reminder.py` | `UserPromptSubmit` | Reads the prompt from stdin; if the task looks non-trivial (action keywords), injects a proactive reminder to create/update the daily log **before** responding. Checks whether a session file already exists to tailor the message. Skips trivial prompts. |
 | `.claude/hooks/memory_pre_agent_reminder.py` | `PreToolUse[Agent]` | Injects a reminder just before launching any sub-agent to include documentation context in its prompt. Does not fire for memory system agents (`memory-search`, `memory-digest-daily`, `memory-digest-spec`) |
 | `.claude/hooks/memory_stop_reminder.py` | `Stop` | Injects a contextual `systemMessage`: if there are active files in `memory/daily/`, asks to update them; if none, reminds Claude to create one only if there was significant work |
 

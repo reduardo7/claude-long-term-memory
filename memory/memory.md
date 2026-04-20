@@ -41,11 +41,12 @@ The instruction is embedded directly in `CLAUDE.md` to guarantee it applies in a
 
 ### Memory hooks
 
-Three hooks complement the activation system:
+Four hooks complement the activation system:
 
 | Hook | Type | When it fires | Behavior |
 |------|------|---------------|----------|
 | `.claude/hooks/memory_search_reminder.py` | `UserPromptSubmit` | Each user prompt | Injects a reminder to `stdout` to invoke `memory-search` before non-trivial tasks. Claude decides whether to apply it based on the prompt's complexity. |
+| `.claude/hooks/memory_log_reminder.py` | `UserPromptSubmit` | Each user prompt | Reads the prompt from stdin, uses keyword heuristics to detect non-trivial work, and injects a proactive reminder to create/update the daily log **before** responding. Skips trivial prompts (simple questions, clarifications). |
 | `.claude/hooks/memory_pre_agent_reminder.py` | `PreToolUse[Agent]` | Before launching any sub-agent | Injects a reminder to include vault context in the sub-agent's prompt. Does not fire for memory system agents (`memory-search`, `memory-digest-daily`, `memory-digest-spec`). |
 | `.claude/hooks/memory_stop_reminder.py` | `Stop` | At the end of each response | Injects a `systemMessage` via JSON. If there are active files in `memory/daily/`, asks to update them. If none, reminds Claude to create one only if there was significant work. |
 

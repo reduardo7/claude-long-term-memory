@@ -73,9 +73,10 @@ Work session → memory/daily/YYYY-MM-DD_HHMMSS.md   (raw log)
 
 ### Hooks
 
-Three Python hooks fire on Claude Code events:
+Four Python hooks fire on Claude Code events:
 
 - `memory_search_reminder.py` — `UserPromptSubmit`: suggests invoking `memory-search` before non-trivial tasks
+- `memory_log_reminder.py` — `UserPromptSubmit`: reads the prompt; if non-trivial, reminds Claude to create/update the daily log **before** responding (not after)
 - `memory_pre_agent_reminder.py` — `PreToolUse[Agent]`: reminds sub-agents to consult vault (skips memory system agents)
 - `memory_stop_reminder.py` — `Stop`: reminds Claude to update the daily log before ending the session
 

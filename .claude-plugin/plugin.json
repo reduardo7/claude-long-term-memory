@@ -49,6 +49,11 @@
             "type": "command",
             "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_search_reminder.py\" || true",
             "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_log_reminder.py\" || true",
+            "timeout": 5000
           }
         ]
       }
