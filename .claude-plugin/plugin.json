@@ -18,6 +18,30 @@
     ]
   },
   "hooks": {
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_pre_compact_reminder.py\" || true",
+            "timeout": 5000,
+            "statusMessage": "Saving memory before compact"
+          }
+        ]
+      }
+    ],
+    "PostCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_post_compact_reminder.py\" || true",
+            "timeout": 5000,
+            "statusMessage": "Reloading base docs after compact"
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Agent",

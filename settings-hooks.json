@@ -1,6 +1,30 @@
 {
   "_comment": "Merge these hooks into your .claude/settings.json (or ~/.claude/settings.json for system-level). Adjust the path prefix if hooks are not at $CLAUDE_PROJECT_DIR/.claude/hooks/.",
   "hooks": {
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_pre_compact_reminder.py || true",
+            "statusMessage": "Saving memory before compact"
+          }
+        ]
+      }
+    ],
+    "PostCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_post_compact_reminder.py || true",
+            "statusMessage": "Reloading base docs after compact"
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Agent",

@@ -27,7 +27,7 @@ bash install.sh /path/to/target-project
 The script copies memory system files (commands, agents, rules, hooks, vault templates) into the target project. It skips existing vault files to avoid overwriting customizations.
 
 **Post-install steps (both options):**
-1. Merge `settings-hooks.json` into `.claude/settings.json` in the target project (plugin install only needs `Stop` and `PreToolUse[Agent]` hooks — `UserPromptSubmit` is wired automatically)
+1. Merge `settings-hooks.json` into `.claude/settings.json` in the target project (plugin install only needs `Stop`, `PreToolUse[Agent]`, `PreCompact`, and `PostCompact` hooks — `UserPromptSubmit` is wired automatically)
 2. Append `CLAUDE.md.snippet.md` to the target project's `CLAUDE.md`
 3. Customize `docs/vault/Home.md` for the target project
 4. Update the skills table in `.claude/agents/memory-digest-daily.md`
@@ -77,12 +77,14 @@ Work session → memory/daily/YYYY-MM-DD_HHMMSS.md   (raw log)
 - `.claude-plugin/plugin.json` — used when installed via `/plugin install` (paths use `${CLAUDE_PLUGIN_ROOT}`)
 - `settings-hooks.json` — used for manual installs (paths use `$CLAUDE_PROJECT_DIR`)
 
-Four Python hooks fire on Claude Code events:
+Six Python hooks fire on Claude Code events:
 
 - `memory_search_reminder.py` — `UserPromptSubmit`: suggests invoking `memory-search` before non-trivial tasks
 - `memory_log_reminder.py` — `UserPromptSubmit`: reads the prompt; if non-trivial, reminds Claude to create/update the daily log **before** responding (not after)
 - `memory_pre_agent_reminder.py` — `PreToolUse[Agent]`: reminds sub-agents to consult vault (skips memory system agents)
 - `memory_stop_reminder.py` — `Stop`: reminds Claude to update the daily log before ending the session
+- `memory_pre_compact_reminder.py` — `PreCompact`: reminds Claude to persist the daily log **before** context compaction discards conversation history
+- `memory_post_compact_reminder.py` — `PostCompact`: reminds Claude to re-read base vault documents after compaction to restore architectural context
 
 ### `/memory-digest` Pipeline
 
