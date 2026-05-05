@@ -64,7 +64,7 @@ This installs the `/memory-digest` slash command, the three sub-agents (`memory-
 #### Step 1 — Initialize the project structure
 
 ```bash
-bash ~/.claude/plugins/long-term-memory/install.sh /path/to/your-project
+uv run ~/.claude/plugins/long-term-memory/install.py /path/to/your-project
 ```
 
 This creates `memory/daily/`, `docs/vault/`, and copies the operating instructions into your project. Existing files are never overwritten.
@@ -80,7 +80,7 @@ See [Customization](#customization) below.
 #### Step 1 — Run the install script
 
 ```bash
-bash /path/to/claude-long-term-memory/install.sh /path/to/your-project
+uv run /path/to/claude-long-term-memory/install.py /path/to/your-project
 ```
 
 This creates the required directories and copies all files into your project. Existing files are never overwritten.
@@ -220,7 +220,7 @@ Hooks use `uv run` by default. To use plain `python3` instead, replace `uv run` 
 | `.claude/hooks/memory_stop_reminder.py`          | Stop hook: reminds Claude to update session log                              |
 | `.claude/hooks/memory_pre_compact_reminder.py`   | PreCompact hook: reminds Claude to persist daily log before compaction       |
 | `.claude/hooks/memory_post_compact_reminder.py`  | PostCompact hook: reminds Claude to re-read vault after compaction           |
-| `install.sh`                                     | Bootstrap script — creates directories and copies files into your project    |
+| `install.py`                                     | Bootstrap script — creates directories and copies files into your project    |
 
 ---
 

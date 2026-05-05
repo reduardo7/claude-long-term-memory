@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a **Claude Code plugin** — not a software package with a build step. It provides a drop-in long-term memory system for Claude Code projects: raw session notes are recorded during work and later distilled into a curated Obsidian vault via the `/memory-digest` command.
 
-It can be installed as a Claude plugin (recommended) or manually via `install.sh`.
+It can be installed as a Claude plugin (recommended) or manually via `install.py`.
 
 ## Installation
 
@@ -16,12 +16,12 @@ It can be installed as a Claude plugin (recommended) or manually via `install.sh
 /plugin install github.com/reduardo7/claude-long-term-memory
 ```
 
-After installing the plugin, run `install.sh` to set up the vault/memory directory structure in the target project, then complete the post-install steps below.
+After installing the plugin, run `install.py` to set up the vault/memory directory structure in the target project, then complete the post-install steps below.
 
 ### Manual
 
 ```bash
-bash install.sh /path/to/target-project
+uv run install.py /path/to/target-project
 ```
 
 The script copies memory system files (commands, agents, rules, hooks, vault templates) into the target project. It skips existing vault files to avoid overwriting customizations.
@@ -65,7 +65,7 @@ Work session → memory/daily/YYYY-MM-DD_HHMMSS.md   (raw log)
 | `docs/vault/Home.md` | Vault master index — customize per target project |
 | `docs/vault/Decisions/Index.md` | ADR registry with next ADR number |
 | `specs/digested.txt` | Registry of already-processed spec files |
-| `install.sh` | Bootstrap script — creates directories and copies files into target project |
+| `install.py` | Bootstrap script — creates directories and copies files into target project |
 
 ### Hooks
 
