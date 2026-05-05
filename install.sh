@@ -30,7 +30,6 @@ mkdir -p "$TARGET/docs/vault/Proyecto"
 mkdir -p "$TARGET/.claude/commands"
 mkdir -p "$TARGET/.claude/agents"
 mkdir -p "$TARGET/.claude/rules"
-mkdir -p "$TARGET/.claude/hooks"
 
 # Copy memory system files
 echo "→ Copying memory/"
@@ -78,21 +77,11 @@ cp "$PLUGIN_DIR/.claude/rules/obsidian-vault.md" "$TARGET/.claude/rules/obsidian
 echo "  CREATED: .claude/rules/memory.md"
 echo "  CREATED: .claude/rules/obsidian-vault.md"
 
-# Copy hooks
-echo "→ Copying .claude/hooks/"
-cp "$PLUGIN_DIR/.claude/hooks/memory_search_reminder.py"    "$TARGET/.claude/hooks/memory_search_reminder.py"
-cp "$PLUGIN_DIR/.claude/hooks/memory_stop_reminder.py"      "$TARGET/.claude/hooks/memory_stop_reminder.py"
-cp "$PLUGIN_DIR/.claude/hooks/memory_pre_agent_reminder.py" "$TARGET/.claude/hooks/memory_pre_agent_reminder.py"
-echo "  CREATED: .claude/hooks/memory_search_reminder.py"
-echo "  CREATED: .claude/hooks/memory_stop_reminder.py"
-echo "  CREATED: .claude/hooks/memory_pre_agent_reminder.py"
-
 echo ""
 echo "Installation complete."
 echo ""
 echo "Next steps:"
-echo "  1. Append CLAUDE.md.snippet.md to $TARGET/CLAUDE.md"
-echo "  2. Customize docs/vault/Home.md for your project"
-echo "  3. Update the skills table in .claude/agents/memory-digest-daily.md"
+echo "  1. Customize docs/vault/Home.md for your project"
+echo "  2. Update the skills table in .claude/agents/memory-digest-daily.md"
 echo ""
 echo "See README.md for full details."

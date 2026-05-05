@@ -1,5 +1,17 @@
 {
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/hooks/memory_session_start_reminder.py\"",
+            "timeout": 5000,
+            "statusMessage": "Loading memory instructions"
+          }
+        ]
+      }
+    ],
     "PreCompact": [
       {
         "hooks": [
@@ -15,6 +27,12 @@
     "PostCompact": [
       {
         "hooks": [
+          {
+            "type": "command",
+            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/hooks/memory_session_start_reminder.py\"",
+            "timeout": 5000,
+            "statusMessage": "Reloading memory instructions after compact"
+          },
           {
             "type": "command",
             "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/hooks/memory_post_compact_reminder.py\"",

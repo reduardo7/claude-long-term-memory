@@ -33,16 +33,17 @@ Session work
 docs/vault/  (curated, permanent, cross-linked Obsidian vault)
 ```
 
-**Six hooks** reinforce the system automatically:
+**Hooks** reinforce the system automatically:
 
-| Hook                              | Trigger                   | Effect                                                              |
-| --------------------------------- | ------------------------- | ------------------------------------------------------------------- |
-| `memory_search_reminder.py`       | Every user prompt         | Reminds Claude to invoke `memory-search` before non-trivial tasks   |
-| `memory_log_reminder.py`          | Every user prompt         | Reminds Claude to create/update the daily log before responding     |
-| `memory_pre_agent_reminder.py`    | Before any sub-agent      | Reminds Claude to include vault context in the sub-agent prompt     |
-| `memory_stop_reminder.py`         | End of every response     | Reminds Claude to log decisions/errors before the session closes    |
-| `memory_pre_compact_reminder.py`  | Before context compaction | Reminds Claude to persist the daily log before history is discarded |
-| `memory_post_compact_reminder.py` | After context compaction  | Reminds Claude to re-read base vault documents to restore context   |
+| Hook                               | Trigger                          | Effect                                                              |
+| ---------------------------------- | -------------------------------- | ------------------------------------------------------------------- |
+| `memory_session_start_reminder.py` | Session start + after compaction | Injects memory instructions — no CLAUDE.md edit needed              |
+| `memory_search_reminder.py`        | Every user prompt                | Reminds Claude to invoke `memory-search` before non-trivial tasks   |
+| `memory_log_reminder.py`           | Every user prompt                | Reminds Claude to create/update the daily log before responding     |
+| `memory_pre_agent_reminder.py`     | Before any sub-agent             | Reminds Claude to include vault context in the sub-agent prompt     |
+| `memory_stop_reminder.py`          | End of every response            | Reminds Claude to log decisions/errors before the session closes    |
+| `memory_pre_compact_reminder.py`   | Before context compaction        | Reminds Claude to persist the daily log before history is discarded |
+| `memory_post_compact_reminder.py`  | After context compaction         | Reminds Claude to re-read base vault documents to restore context   |
 
 ---
 
@@ -68,13 +69,7 @@ bash ~/.claude/plugins/long-term-memory/install.sh /path/to/your-project
 
 This creates `memory/daily/`, `docs/vault/`, and copies the operating instructions into your project. Existing files are never overwritten.
 
-#### Step 2 — Add the memory section to `CLAUDE.md`
-
-```bash
-cat ~/.claude/plugins/long-term-memory/CLAUDE.md.snippet.md >> /path/to/your-project/CLAUDE.md
-```
-
-#### Step 3 — Customize for your project
+#### Step 2 — Customize for your project
 
 See [Customization](#customization) below.
 
@@ -113,99 +108,11 @@ cp /path/to/claude-long-term-memory/.claude/agents/memory-search.md             
 
 cp /path/to/claude-long-term-memory/.claude/rules/memory.md                       ./.claude/rules/memory.md
 cp /path/to/claude-long-term-memory/.claude/rules/obsidian-vault.md               ./.claude/rules/obsidian-vault.md
-
-cp /path/to/claude-long-term-memory/.claude/hooks/memory_search_reminder.py       ./.claude/hooks/memory_search_reminder.py
-cp /path/to/claude-long-term-memory/.claude/hooks/memory_log_reminder.py          ./.claude/hooks/memory_log_reminder.py
-cp /path/to/claude-long-term-memory/.claude/hooks/memory_stop_reminder.py         ./.claude/hooks/memory_stop_reminder.py
-cp /path/to/claude-long-term-memory/.claude/hooks/memory_pre_agent_reminder.py    ./.claude/hooks/memory_pre_agent_reminder.py
-cp /path/to/claude-long-term-memory/.claude/hooks/memory_pre_compact_reminder.py  ./.claude/hooks/memory_pre_compact_reminder.py
-cp /path/to/claude-long-term-memory/.claude/hooks/memory_post_compact_reminder.py ./.claude/hooks/memory_post_compact_reminder.py
 ```
 
 </details>
 
-#### Step 2 — Add hooks to `.claude/settings.json`
-
-Merge the following into your project's `.claude/settings.json` (replace `${CLAUDE_PLUGIN_ROOT}` with `$CLAUDE_PROJECT_DIR` for manual installs):
-
-```json
-{
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Agent",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_pre_agent_reminder.py || true"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_stop_reminder.py || true",
-            "statusMessage": "Memory reminder"
-          }
-        ]
-      }
-    ],
-    "PreCompact": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_pre_compact_reminder.py || true",
-            "statusMessage": "Saving memory before compact"
-          }
-        ]
-      }
-    ],
-    "PostCompact": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_post_compact_reminder.py || true",
-            "statusMessage": "Reloading base docs after compact"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_search_reminder.py || true"
-          },
-          {
-            "type": "command",
-            "command": "uv run $CLAUDE_PROJECT_DIR/.claude/hooks/memory_log_reminder.py || true"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-> For system-level installation (applies to all projects), use `~/.claude/settings.json` and replace `$CLAUDE_PROJECT_DIR/.claude/hooks/` with the absolute path to your hooks.
-
-#### Step 3 — Add the memory section to `CLAUDE.md`
-
-```bash
-cat /path/to/claude-long-term-memory/CLAUDE.md.snippet.md >> /path/to/your-project/CLAUDE.md
-```
-
-#### Step 4 — Customize for your project
+#### Step 2 — Customize for your project
 
 See [Customization](#customization) below.
 
@@ -266,7 +173,7 @@ The default vault path is `docs/vault/`. To change it, update all references in:
 - `.claude/agents/memory-digest-spec.md`
 - `.claude/agents/memory-search.md`
 - `.claude/rules/obsidian-vault.md`
-- `CLAUDE.md.snippet.md`
+- `.claude/hooks/memory_session_start_reminder.py`
 
 ### Conditional docs
 
@@ -288,32 +195,32 @@ Hooks use `uv run` by default. To use plain `python3` instead, replace `uv run` 
 
 ## File reference
 
-| File                                            | Purpose                                                                      |
-| ----------------------------------------------- | ---------------------------------------------------------------------------- |
-| `.claude-plugin/plugin.json`                    | Plugin manifest — enables `/plugin install`                                  |
-| `skills/memory-digest/SKILL.md`                 | `/memory-digest` slash command (plugin format)                               |
-| `.claude-plugin/marketplace.json`               | Plugin marketplace registration                                              |
-| `memory/memory.md`                              | Operating instructions for Claude — what to record, when, and in what format |
-| `memory/daily/*.md`                             | Raw session logs — ephemeral, deleted after `/memory-digest`                 |
-| `docs/vault/Home.md`                            | Vault master index — update as vault grows                                   |
-| `docs/vault/Claude/Memory.md`                   | Memory system documentation in the vault                                     |
-| `docs/vault/Decisiones/Index.md`                | ADR index — updated after every architectural decision                       |
-| `docs/vault/Desarrollo/Obsidian Vault.md`       | Vault writing conventions (naming, wikilinks)                                |
-| `.claude/commands/memory-digest.md`             | `/memory-digest` slash command (legacy format)                               |
-| `.claude/commands/conditional-docs.md`          | Maps task types to vault documents — customize per project                   |
-| `.claude/agents/memory-digest-daily.md`         | Sub-agent: distills one daily log → vault + skills                           |
-| `.claude/agents/memory-digest-spec.md`          | Sub-agent: distills one spec file → vault + skills                           |
-| `.claude/agents/memory-search.md`               | Sub-agent: retrieves vault docs before tasks                                 |
-| `.claude/rules/memory.md`                       | Claude Rule: fires when memory/ or memory system files are touched           |
-| `.claude/rules/obsidian-vault.md`               | Claude Rule: fires when docs/vault/ files are touched                        |
-| `.claude/hooks/memory_search_reminder.py`       | UserPromptSubmit hook: reminds Claude to search vault                        |
-| `.claude/hooks/memory_log_reminder.py`          | UserPromptSubmit hook: reminds Claude to update daily log before responding  |
-| `.claude/hooks/memory_pre_agent_reminder.py`    | PreToolUse[Agent] hook: reminds Claude to pass vault context                 |
-| `.claude/hooks/memory_stop_reminder.py`         | Stop hook: reminds Claude to update session log                              |
-| `.claude/hooks/memory_pre_compact_reminder.py`  | PreCompact hook: reminds Claude to persist daily log before compaction       |
-| `.claude/hooks/memory_post_compact_reminder.py` | PostCompact hook: reminds Claude to re-read vault after compaction           |
-| `CLAUDE.md.snippet.md`                          | CLAUDE.md snippet — append to your project's CLAUDE.md                       |
-| `install.sh`                                    | Bootstrap script — creates directories and copies files into your project    |
+| File                                             | Purpose                                                                      |
+| ------------------------------------------------ | ---------------------------------------------------------------------------- |
+| `.claude-plugin/plugin.json`                     | Plugin manifest — enables `/plugin install`                                  |
+| `skills/memory-digest/SKILL.md`                  | `/memory-digest` slash command (plugin format)                               |
+| `.claude-plugin/marketplace.json`                | Plugin marketplace registration                                              |
+| `memory/memory.md`                               | Operating instructions for Claude — what to record, when, and in what format |
+| `memory/daily/*.md`                              | Raw session logs — ephemeral, deleted after `/memory-digest`                 |
+| `docs/vault/Home.md`                             | Vault master index — update as vault grows                                   |
+| `docs/vault/Claude/Memory.md`                    | Memory system documentation in the vault                                     |
+| `docs/vault/Decisiones/Index.md`                 | ADR index — updated after every architectural decision                       |
+| `docs/vault/Desarrollo/Obsidian Vault.md`        | Vault writing conventions (naming, wikilinks)                                |
+| `.claude/commands/memory-digest.md`              | `/memory-digest` slash command (legacy format)                               |
+| `.claude/commands/conditional-docs.md`           | Maps task types to vault documents — customize per project                   |
+| `.claude/agents/memory-digest-daily.md`          | Sub-agent: distills one daily log → vault + skills                           |
+| `.claude/agents/memory-digest-spec.md`           | Sub-agent: distills one spec file → vault + skills                           |
+| `.claude/agents/memory-search.md`                | Sub-agent: retrieves vault docs before tasks                                 |
+| `.claude/rules/memory.md`                        | Claude Rule: fires when memory/ or memory system files are touched           |
+| `.claude/rules/obsidian-vault.md`                | Claude Rule: fires when docs/vault/ files are touched                        |
+| `.claude/hooks/memory_session_start_reminder.py` | SessionStart + PostCompact hook: injects memory instructions automatically   |
+| `.claude/hooks/memory_search_reminder.py`        | UserPromptSubmit hook: reminds Claude to search vault                        |
+| `.claude/hooks/memory_log_reminder.py`           | UserPromptSubmit hook: reminds Claude to update daily log before responding  |
+| `.claude/hooks/memory_pre_agent_reminder.py`     | PreToolUse[Agent] hook: reminds Claude to pass vault context                 |
+| `.claude/hooks/memory_stop_reminder.py`          | Stop hook: reminds Claude to update session log                              |
+| `.claude/hooks/memory_pre_compact_reminder.py`   | PreCompact hook: reminds Claude to persist daily log before compaction       |
+| `.claude/hooks/memory_post_compact_reminder.py`  | PostCompact hook: reminds Claude to re-read vault after compaction           |
+| `install.sh`                                     | Bootstrap script — creates directories and copies files into your project    |
 
 ---
 

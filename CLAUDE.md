@@ -27,9 +27,8 @@ bash install.sh /path/to/target-project
 The script copies memory system files (commands, agents, rules, hooks, vault templates) into the target project. It skips existing vault files to avoid overwriting customizations.
 
 **Post-install steps (both options):**
-1. Append `CLAUDE.md.snippet.md` to the target project's `CLAUDE.md`
-2. Customize `docs/vault/Home.md` for the target project
-3. Update the skills table in `.claude/agents/memory-digest-daily.md`
+1. Customize `docs/vault/Home.md` for the target project
+2. Update the skills table in `.claude/agents/memory-digest-daily.md`
 
 **Runtime requirements:** Python 3.11+, `uv` (for hooks execution).
 
@@ -66,7 +65,6 @@ Work session → memory/daily/YYYY-MM-DD_HHMMSS.md   (raw log)
 | `docs/vault/Home.md` | Vault master index — customize per target project |
 | `docs/vault/Decisiones/Index.md` | ADR registry with next ADR number |
 | `specs/digested.txt` | Registry of already-processed spec files |
-| `CLAUDE.md.snippet.md` | Snippet to append to the target project's CLAUDE.md |
 | `install.sh` | Bootstrap script — creates directories and copies files into target project |
 
 ### Hooks
@@ -74,8 +72,9 @@ Work session → memory/daily/YYYY-MM-DD_HHMMSS.md   (raw log)
 **When adding or modifying hooks, update:**
 - `.claude-plugin/plugin.json` — used when installed via `/plugin install` (paths use `${CLAUDE_PLUGIN_ROOT}`)
 
-Six Python hooks fire on Claude Code events:
+Seven Python hooks fire on Claude Code events:
 
+- `memory_session_start_reminder.py` — `SessionStart` + `PostCompact`: injects the memory system instructions at session start and after compaction (replaces the need to append a snippet to `CLAUDE.md`)
 - `memory_search_reminder.py` — `UserPromptSubmit`: suggests invoking `memory-search` before non-trivial tasks
 - `memory_log_reminder.py` — `UserPromptSubmit`: reads the prompt; if non-trivial, reminds Claude to create/update the daily log **before** responding (not after)
 - `memory_pre_agent_reminder.py` — `PreToolUse[Agent]`: reminds sub-agents to consult vault (skips memory system agents)

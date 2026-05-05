@@ -1,3 +1,19 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = []
+# ///
+
+"""
+SessionStart / PostCompact hook — injects the long-term memory system
+instructions at the start of every session and after context compaction.
+
+Replaces the need to manually append a snippet to the project's CLAUDE.md.
+"""
+
+import sys
+
+MEMORY_INSTRUCTIONS = """\
 # Long-Term Memory System
 
 **Memory instructions (mandatory reading):** See [`memory/memory.md`](./memory/memory.md) — defines how to record decisions, errors, and learnings in `memory/daily/*.md` during each session, and how `/memory-digest` promotes them to the Obsidian vault.
@@ -21,4 +37,14 @@
 Agent(subagent_type: "memory-search", prompt: "<task description>")
 ```
 
-Not necessary for: simple bug fixes without architectural impact, questions already answered in the current conversation context, trivial sessions without implementation work.
+Not necessary for: simple bug fixes without architectural impact, questions already answered in the current conversation context, trivial sessions without implementation work.\
+"""
+
+
+def main():
+    print(f"<memory-session-instructions>\n{MEMORY_INSTRUCTIONS}\n</memory-session-instructions>")
+    sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()
