@@ -46,12 +46,12 @@ specs/
 CLAUDE.md              ← "Long-Term Memory" section: inline instruction loaded in every session
 ```
 
-| Layer | Purpose | Lifecycle |
-|-------|---------|-----------|
-| `memory/daily/*.md` | Raw log — no filter, in real time | Ephemeral: deleted after `/memory-digest` |
-| `specs/*.md` | Implementation specs per feature/issue | Immutable: never modified or deleted |
-| `specs/digested.txt` | Registry of already-digested specs | Accumulative: only lines added |
-| `docs/vault/` | Curated, linked, permanent knowledge | Permanent |
+| Layer                | Purpose                                | Lifecycle                                 |
+| -------------------- | -------------------------------------- | ----------------------------------------- |
+| `memory/daily/*.md`  | Raw log — no filter, in real time      | Ephemeral: deleted after `/memory-digest` |
+| `specs/*.md`         | Implementation specs per feature/issue | Immutable: never modified or deleted      |
+| `specs/digested.txt` | Registry of already-digested specs     | Accumulative: only lines added            |
+| `docs/vault/`        | Curated, linked, permanent knowledge   | Permanent                                 |
 
 ---
 
@@ -95,9 +95,13 @@ topic: <main topic, one line>
 # Session <date>
 
 ## Context
+
 ## Decisions
+
 ## Errors and corrections
+
 ## Learnings
+
 ## References
 ```
 
@@ -142,11 +146,11 @@ topic: <main topic, one line>
 
 Internal steps:
 
-1. Loads minimum vault context (`Home.md`, `Decisiones/Index.md`, `conditional_docs.md` if it exists).
+1. Loads minimum vault context (`Home.md`, `Decisiones/Index.md`, `conditional-docs.md` if it exists).
 2. Reads the session file in full.
 3. Classifies each entry according to the destination table.
 4. Writes or updates documents in the vault (with bidirectional links, without duplicating).
-5. Updates `Home.md`, `Decisiones/Index.md`, and `conditional_docs.md` if there are new documents.
+5. Updates `Home.md`, `Decisiones/Index.md`, and `conditional-docs.md` if there are new documents.
 6. Evaluates whether any new document requires a Claude Rule in `.claude/rules/`.
 7. Returns structured report to the orchestrator.
 
@@ -162,7 +166,7 @@ Internal steps:
 
 Internal steps:
 
-1. Loads minimum vault context (`Home.md`, `Decisiones/Index.md`, `conditional_docs.md` if it exists).
+1. Loads minimum vault context (`Home.md`, `Decisiones/Index.md`, `conditional-docs.md` if it exists).
 2. Reads the spec in full.
 3. Extracts **only durable knowledge** — discards purely procedural steps.
 4. Classifies and writes to the vault (same rules as `memory-digest-daily`).
@@ -180,8 +184,9 @@ Before executing non-trivial tasks (implementing features, changing architecture
 **File:** `.claude/agents/memory-search.md`
 
 **Mandatory entry points** (read before searching by topic):
+
 1. `docs/vault/Home.md`
-2. `.claude/commands/conditional_docs.md` (if it exists)
+2. `.claude/commands/conditional-docs.md` (if it exists)
 3. Recent daily logs (`memory/daily/`) — filenames use format `YYYY-MM-DD_HHMMSS.md`; compare the date prefix to today's date to determine which files are from the last 7 days
 4. `docs/vault/Decisiones/Index.md`
 
@@ -191,22 +196,22 @@ Before executing non-trivial tasks (implementing features, changing architecture
 
 The memory system requires **3 complementary activation components** — all three are needed for correct operation; none is sufficient alone:
 
-| # | Mechanism | When it applies | Role |
-|---|-----------|-----------------|------|
-| 1 | `CLAUDE.md` — "Long-Term Memory" section (inline) | Every session — CLAUDE.md always loads | Guarantees activation regardless of which domain is being worked on |
-| 2 | `.claude/rules/memory.md` | When touching `memory/**/*` or `memory-digest` files | Loads detailed instructions and mandatory reading when working on the memory system itself |
-| 3 | Hooks (`memory_search_reminder.py`, `memory_log_reminder.py`, `memory_pre_agent_reminder.py`, `memory_stop_reminder.py`) | Prompts, agent launches, end of response | Real-time reminders that reinforce the consultation and recording behavior |
+| #   | Mechanism                                                                                                                | When it applies                                      | Role                                                                                       |
+| --- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| 1   | `CLAUDE.md` — "Long-Term Memory" section (inline)                                                                        | Every session — CLAUDE.md always loads               | Guarantees activation regardless of which domain is being worked on                        |
+| 2   | `.claude/rules/memory.md`                                                                                                | When touching `memory/**/*` or `memory-digest` files | Loads detailed instructions and mandatory reading when working on the memory system itself |
+| 3   | Hooks (`memory_search_reminder.py`, `memory_log_reminder.py`, `memory_pre_agent_reminder.py`, `memory_stop_reminder.py`) | Prompts, agent launches, end of response             | Real-time reminders that reinforce the consultation and recording behavior                 |
 
 ---
 
 ## Hook mechanism
 
-| Hook | Type | Behavior |
-|------|------|----------|
-| `.claude/hooks/memory_search_reminder.py` | `UserPromptSubmit` | Injects a reminder in each user prompt to invoke `memory-search` before non-trivial tasks |
-| `.claude/hooks/memory_log_reminder.py` | `UserPromptSubmit` | Reads the prompt from stdin; if the task looks non-trivial (action keywords), injects a proactive reminder to create/update the daily log **before** responding. Checks whether a session file already exists to tailor the message. Skips trivial prompts. |
-| `.claude/hooks/memory_pre_agent_reminder.py` | `PreToolUse[Agent]` | Injects a reminder just before launching any sub-agent to include documentation context in its prompt. Does not fire for memory system agents (`memory-search`, `memory-digest-daily`, `memory-digest-spec`) |
-| `.claude/hooks/memory_stop_reminder.py` | `Stop` | Injects a contextual `systemMessage`: if there are active files in `memory/daily/`, asks to update them; if none, reminds Claude to create one only if there was significant work |
+| Hook                                         | Type                | Behavior                                                                                                                                                                                                                                                    |
+| -------------------------------------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.claude/hooks/memory_search_reminder.py`    | `UserPromptSubmit`  | Injects a reminder in each user prompt to invoke `memory-search` before non-trivial tasks                                                                                                                                                                   |
+| `.claude/hooks/memory_log_reminder.py`       | `UserPromptSubmit`  | Reads the prompt from stdin; if the task looks non-trivial (action keywords), injects a proactive reminder to create/update the daily log **before** responding. Checks whether a session file already exists to tailor the message. Skips trivial prompts. |
+| `.claude/hooks/memory_pre_agent_reminder.py` | `PreToolUse[Agent]` | Injects a reminder just before launching any sub-agent to include documentation context in its prompt. Does not fire for memory system agents (`memory-search`, `memory-digest-daily`, `memory-digest-spec`)                                                |
+| `.claude/hooks/memory_stop_reminder.py`      | `Stop`              | Injects a contextual `systemMessage`: if there are active files in `memory/daily/`, asks to update them; if none, reminds Claude to create one only if there was significant work                                                                           |
 
 `UserPromptSubmit` and `PreToolUse` hooks print to `stdout` — Claude Code injects that text as additional context before processing the tool call or prompt. The `Stop` hook returns JSON `{"systemMessage": "..."}` via `stdout`.
 

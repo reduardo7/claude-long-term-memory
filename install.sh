@@ -60,7 +60,7 @@ copy_if_missing "$PLUGIN_DIR/docs/vault/Desarrollo/Comportamientos Esperados.md"
 echo "→ Copying .claude/commands/"
 cp "$PLUGIN_DIR/.claude/commands/memory-digest.md" "$TARGET/.claude/commands/memory-digest.md"
 echo "  CREATED: .claude/commands/memory-digest.md"
-copy_if_missing "$PLUGIN_DIR/.claude/commands/conditional_docs.md" "$TARGET/.claude/commands/conditional_docs.md"
+copy_if_missing "$PLUGIN_DIR/.claude/commands/conditional-docs.md" "$TARGET/.claude/commands/conditional-docs.md"
 
 # Copy Claude agents
 echo "→ Copying .claude/agents/"

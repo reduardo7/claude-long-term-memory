@@ -1,6 +1,6 @@
 ---
 name: memory-digest-spec
-description: "Use this agent to process a single spec file from specs/, extract durable architectural knowledge and implementation decisions, and promote them to the correct location in the Obsidian vault and relevant skills. Launched by /memory-digest for each undigested spec. Returns a summary of vault files and skills created/modified."
+description: 'Use this agent to process a single spec file from specs/, extract durable architectural knowledge and implementation decisions, and promote them to the correct location in the Obsidian vault and relevant skills. Launched by /memory-digest for each undigested spec. Returns a summary of vault files and skills created/modified.'
 tools:
   - Glob
   - Grep
@@ -30,7 +30,7 @@ Before reading the spec, load the minimum vault context needed to avoid duplicat
 
 - Read `docs/vault/Home.md` — vault structure and section index.
 - Read `docs/vault/Decisiones/Index.md` — existing ADRs (to avoid duplicates and determine the next ADR number).
-- Read `.claude/commands/conditional_docs.md` — to know which docs to update if new conditional reading rules are needed.
+- Read `.claude/commands/conditional-docs.md` — to know which docs to update if new conditional reading rules are needed.
 - Read `docs/vault/Desarrollo/Obsidian Vault.md` — mandatory: naming conventions (kebab-case, snake_case, ADR naming), wikilink format (full path required), and the checklist for creating/renaming vault files. Claude Rules for this path may not fire in sub-agent context — read it explicitly.
 
 ---
@@ -45,18 +45,19 @@ Read the full content of the spec file path provided as input.
 
 Focus on **durable knowledge** — information that remains relevant after the feature is shipped. Skip implementation steps that are self-evident from the code.
 
-| What to look for | Vault destination |
-|------------------|-------------------|
-| Architectural decision (why X was chosen over Y) | `docs/vault/Decisiones/` — create ADR or update `Index.md` |
-| New pattern not yet in ADRs (e.g., new auth flow, new entity lifecycle rule) | `docs/vault/Decisiones/` or `docs/vault/Desarrollo/` |
-| Business rule or domain constraint explained in the spec | `docs/vault/Proyecto/PRD.md` or the relevant ADR section |
-| Gotcha or non-obvious behavior | `docs/vault/Desarrollo/Comportamientos Esperados.md` |
-| Infrastructure or deployment decision | `docs/vault/Arquitectura/` |
-| API contract decision (route, response shape, auth policy) | Relevant ADR in `docs/vault/Decisiones/` |
-| Database schema decision (new table, index rationale, FK design) | `docs/vault/Arquitectura/` or relevant ADR |
-| Pure implementation steps without decisions | Discard — the code captures the how; the vault captures the why |
+| What to look for                                                             | Vault destination                                               |
+| ---------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Architectural decision (why X was chosen over Y)                             | `docs/vault/Decisiones/` — create ADR or update `Index.md`      |
+| New pattern not yet in ADRs (e.g., new auth flow, new entity lifecycle rule) | `docs/vault/Decisiones/` or `docs/vault/Desarrollo/`            |
+| Business rule or domain constraint explained in the spec                     | `docs/vault/Proyecto/PRD.md` or the relevant ADR section        |
+| Gotcha or non-obvious behavior                                               | `docs/vault/Desarrollo/Comportamientos Esperados.md`            |
+| Infrastructure or deployment decision                                        | `docs/vault/Arquitectura/`                                      |
+| API contract decision (route, response shape, auth policy)                   | Relevant ADR in `docs/vault/Decisiones/`                        |
+| Database schema decision (new table, index rationale, FK design)             | `docs/vault/Arquitectura/` or relevant ADR                      |
+| Pure implementation steps without decisions                                  | Discard — the code captures the how; the vault captures the why |
 
 **High-value signals in a spec (English and Spanish):**
+
 - "because" / "porque", "in order to" / "para que", "instead of" / "en lugar de", "trade-off", "decision" / "decisión", "rationale" — likely a decision worth capturing.
 - "note:" / "nota:", "warning:" / "advertencia:", "important:" / "importante:", "caveat:" — likely a gotcha or constraint.
 - Security, auth, or data access design — almost always worth an ADR entry.
@@ -84,7 +85,7 @@ If new vault documents were created:
 
 - Add entry to `docs/vault/Home.md` in the correct section.
 - Add entry to `docs/vault/Decisiones/Index.md` if a decision was recorded.
-- Evaluate if `.claude/commands/conditional_docs.md` needs a new condition (only when the new document should be read before touching specific files/paths).
+- Evaluate if `.claude/commands/conditional-docs.md` needs a new condition (only when the new document should be read before touching specific files/paths).
 
 ---
 
@@ -95,17 +96,20 @@ Skills live in `.claude/skills/<name>/SKILL.md`. They are the authoritative impl
 **How to find skills:** use `Glob` with pattern `.claude/skills/*/SKILL.md` to discover all available skills in this project.
 
 **When to update a skill:**
+
 - A new reusable pattern was discovered.
 - A recurring mistake was corrected and the correct approach should be codified.
 - A gotcha specific to a technology layer was found.
 - A new standard was established.
 
 **When NOT to update a skill:**
+
 - The knowledge is purely business/domain-specific (→ vault ADR or PRD).
 - The knowledge is infrastructure/deployment (→ `docs/vault/Arquitectura/`).
 - The pattern is already documented in the skill — always `Grep` the `SKILL.md` before writing.
 
 **How to update:**
+
 1. Read the relevant `SKILL.md` to find the correct section.
 2. Add the new pattern, rule, or anti-pattern in the appropriate section. Keep the style consistent.
 3. If a pattern contradicts existing content, update the existing content — never leave conflicting guidance.
@@ -122,7 +126,7 @@ If a new vault document is linked to a specific folder, file, or file type in th
 ```markdown
 ---
 paths:
-  - "path/to/folder/**/*"
+  - 'path/to/folder/**/*'
 ---
 
 # Descriptive Name
