@@ -1,6 +1,6 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "claude-ltm",
+  "name": "reduardo7",
   "description": "Persistent memory system for Claude Code",
   "owner": {
     "name": "Eduardo Cuomo",
