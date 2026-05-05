@@ -56,7 +56,7 @@ Install the plugin with a single command inside Claude Code:
 /plugin install github.com/reduardo7/claude-long-term-memory
 ```
 
-This installs the `/memory-digest` slash command, the three sub-agents (`memory-search`, `memory-digest-daily`, `memory-digest-spec`), and wires the `UserPromptSubmit` hooks automatically.
+This installs the `/memory-digest` slash command, the three sub-agents (`memory-search`, `memory-digest-daily`, `memory-digest-spec`), and wires all hooks automatically.
 
 **After installing the plugin**, complete the project setup:
 
@@ -68,73 +68,13 @@ bash ~/.claude/plugins/long-term-memory/install.sh /path/to/your-project
 
 This creates `memory/daily/`, `docs/vault/`, and copies the operating instructions into your project. Existing files are never overwritten.
 
-#### Step 2 — Add the remaining hooks to `~/.claude/settings.json`
-
-The plugin wires `UserPromptSubmit` automatically. Add the other four hooks manually. Replace `${CLAUDE_PLUGIN_ROOT}` with the actual plugin path if your Claude Code version does not expand it (e.g. `/Users/YOU/.claude/plugins/marketplaces/claude-ltm`):
-
-```json
-{
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Agent",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_pre_agent_reminder.py\" || true"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_stop_reminder.py\" || true",
-            "statusMessage": "Memory reminder"
-          }
-        ]
-      }
-    ],
-    "PreCompact": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_pre_compact_reminder.py\" || true",
-            "statusMessage": "Saving memory before compact"
-          }
-        ]
-      }
-    ],
-    "PostCompact": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_post_compact_reminder.py\" || true",
-            "statusMessage": "Reloading base docs after compact"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-> The full reference with all hooks is in `settings-hooks.json`.
-
-#### Step 3 — Add the memory section to `CLAUDE.md`
+#### Step 2 — Add the memory section to `CLAUDE.md`
 
 ```bash
 cat ~/.claude/plugins/long-term-memory/CLAUDE.md.snippet.md >> /path/to/your-project/CLAUDE.md
 ```
 
-#### Step 4 — Customize for your project
+#### Step 3 — Customize for your project
 
 See [Customization](#customization) below.
 
@@ -185,7 +125,7 @@ cp /path/to/claude-long-term-memory/.claude/hooks/memory_post_compact_reminder.p
 
 #### Step 2 — Add hooks to `.claude/settings.json`
 
-Merge the following into your project's `.claude/settings.json`. The full reference is also in `settings-hooks.json` (replace `${CLAUDE_PLUGIN_ROOT}` with `$CLAUDE_PROJECT_DIR` for manual installs):
+Merge the following into your project's `.claude/settings.json` (replace `${CLAUDE_PLUGIN_ROOT}` with `$CLAUDE_PROJECT_DIR` for manual installs):
 
 ```json
 {
@@ -369,7 +309,6 @@ Hooks use `uv run` by default. To use plain `python3` instead, replace `uv run` 
 | `.claude/hooks/memory_stop_reminder.py` | Stop hook: reminds Claude to update session log |
 | `.claude/hooks/memory_pre_compact_reminder.py` | PreCompact hook: reminds Claude to persist daily log before compaction |
 | `.claude/hooks/memory_post_compact_reminder.py` | PostCompact hook: reminds Claude to re-read vault after compaction |
-| `settings-hooks.json` | Hook configuration template — merge into `~/.claude/settings.json` |
 | `CLAUDE.md.snippet.md` | CLAUDE.md snippet — append to your project's CLAUDE.md |
 | `install.sh` | Bootstrap script — creates directories and copies files into your project |
 

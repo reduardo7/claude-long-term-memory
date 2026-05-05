@@ -27,10 +27,9 @@ bash install.sh /path/to/target-project
 The script copies memory system files (commands, agents, rules, hooks, vault templates) into the target project. It skips existing vault files to avoid overwriting customizations.
 
 **Post-install steps (both options):**
-1. Merge `settings-hooks.json` into `.claude/settings.json` in the target project (plugin install only needs `Stop`, `PreToolUse[Agent]`, `PreCompact`, and `PostCompact` hooks — `UserPromptSubmit` is wired automatically)
-2. Append `CLAUDE.md.snippet.md` to the target project's `CLAUDE.md`
-3. Customize `docs/vault/Home.md` for the target project
-4. Update the skills table in `.claude/agents/memory-digest-daily.md`
+1. Append `CLAUDE.md.snippet.md` to the target project's `CLAUDE.md`
+2. Customize `docs/vault/Home.md` for the target project
+3. Update the skills table in `.claude/agents/memory-digest-daily.md`
 
 **Runtime requirements:** Python 3.11+, `uv` (for hooks execution).
 
@@ -68,14 +67,12 @@ Work session → memory/daily/YYYY-MM-DD_HHMMSS.md   (raw log)
 | `docs/vault/Decisiones/Index.md` | ADR registry with next ADR number |
 | `specs/digested.txt` | Registry of already-processed spec files |
 | `CLAUDE.md.snippet.md` | Snippet to append to the target project's CLAUDE.md |
-| `settings-hooks.json` | Hook configuration template to merge into target settings |
 | `install.sh` | Bootstrap script — creates directories and copies files into target project |
 
 ### Hooks
 
-**When adding or modifying hooks, always update BOTH files:**
+**When adding or modifying hooks, update:**
 - `.claude-plugin/plugin.json` — used when installed via `/plugin install` (paths use `${CLAUDE_PLUGIN_ROOT}`)
-- `settings-hooks.json` — hook config template for both install methods; uses `${CLAUDE_PLUGIN_ROOT}` by default (plugin install); for manual install replace with `$CLAUDE_PROJECT_DIR`
 
 Six Python hooks fire on Claude Code events:
 

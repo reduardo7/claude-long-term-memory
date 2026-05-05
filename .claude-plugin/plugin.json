@@ -1,6 +1,6 @@
 {
   "name": "claude-ltm",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Project-scoped memory system for Claude Code. Unlike per-user memory tools, knowledge lives inside the repository — shared across the team, versioned in git, and stored as an Obsidian vault. Captures session decisions, errors, and discoveries in daily logs, then distills them via /memory-digest. The vault grows over time, making Claude's responses progressively more accurate for everyone on the team.",
   "author": {
     "name": "Eduardo Cuomo",
@@ -14,72 +14,6 @@
         "description": "Python package manager used to run the hook scripts",
         "install": "curl -LsSf https://astral.sh/uv/install.sh | sh",
         "docs": "https://docs.astral.sh/uv/getting-started/installation/"
-      }
-    ]
-  },
-  "hooks": {
-    "PreCompact": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_pre_compact_reminder.py\" || true",
-            "timeout": 5000,
-            "statusMessage": "Saving memory before compact"
-          }
-        ]
-      }
-    ],
-    "PostCompact": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_post_compact_reminder.py\" || true",
-            "timeout": 5000,
-            "statusMessage": "Reloading base docs after compact"
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "Agent",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_pre_agent_reminder.py\" || true",
-            "timeout": 5000
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_stop_reminder.py\" || true",
-            "timeout": 5000,
-            "statusMessage": "Memory reminder"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_search_reminder.py\" || true",
-            "timeout": 5000
-          },
-          {
-            "type": "command",
-            "command": "uv run \"${CLAUDE_PLUGIN_ROOT}/.claude/hooks/memory_log_reminder.py\" || true",
-            "timeout": 5000
-          }
-        ]
       }
     ]
   }
