@@ -38,17 +38,17 @@ def main():
 
     if existing_logs:
         latest_log = os.path.relpath(existing_logs[-1], project_dir) if project_dir else existing_logs[-1]
-        log_line = f"\n  - {latest_log}  ← sesión activa"
+        log_line = f"\n  - {latest_log}  ← active session"
     else:
         log_line = ""
 
     reminder = (
         "<memory-post-compact-reminder>"
-        "El contexto acaba de ser compactado. Leer ahora los documentos base para "
-        "restaurar el contexto arquitectónico de la sesión:\n"
+        "Context was just compacted. Read the base documents now to "
+        "restore the architectural context of the session:\n"
         f"{docs_list}{log_line}\n"
-        "Estos documentos contienen decisiones, convenciones y estado del proyecto "
-        "que no están en el historial compactado."
+        "These documents contain decisions, conventions, and project state "
+        "that are not in the compacted history."
         "</memory-post-compact-reminder>"
     )
 

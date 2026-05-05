@@ -20,9 +20,9 @@ Every wikilink **must** include the path relative to the vault root, regardless 
 [[Database]]
 
 <!-- Correct — explicit path -->
-[[Proyecto/PRD]]
-[[Arquitectura/Database]]
-[[Decisiones/ADR - Security and Authentication]]
+[[Project/PRD]]
+[[Architecture/Database]]
+[[Decisions/ADR - Security and Authentication]]
 ```
 
 > **Exception:** wikilinks with aliases (`[[path/file|visible text]]`) already include the path by nature.
@@ -33,7 +33,7 @@ Every wikilink **must** include the path relative to the vault root, regardless 
 
 | Document type | Convention | Example |
 |---------------|------------|---------|
-| Section index | `Index.md` inside the folder | `Decisiones/Index.md` |
+| Section index | `Index.md` inside the folder | `Decisions/Index.md` |
 | Development script | `script-name.md` (kebab-case) | `quick-start.md` |
 | ADR by section | `ADR - Section Name.md` | `ADR - Security and Authentication.md` |
 | General document | Descriptive name | `Database.md` |

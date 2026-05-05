@@ -21,7 +21,7 @@ tags: [adr, index, architecture]
 ## Template: New ADR Section
 
 ```markdown
-## [Domain Area] → [[Decisiones/ADR - Domain Area]]
+## [Domain Area] → [[Decisions/ADR - Domain Area]]
 
 | # | Decision summary | Issue |
 |---|-----------------|-------|

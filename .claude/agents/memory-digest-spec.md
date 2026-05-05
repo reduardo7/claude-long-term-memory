@@ -29,9 +29,9 @@ You receive one file path as input. Process only that spec file.
 Before reading the spec, load the minimum vault context needed to avoid duplicates and place knowledge correctly:
 
 - Read `docs/vault/Home.md` — vault structure and section index.
-- Read `docs/vault/Decisiones/Index.md` — existing ADRs (to avoid duplicates and determine the next ADR number).
+- Read `docs/vault/Decisions/Index.md` — existing ADRs (to avoid duplicates and determine the next ADR number).
 - Read `.claude/commands/conditional-docs.md` — to know which docs to update if new conditional reading rules are needed.
-- Read `docs/vault/Desarrollo/Obsidian Vault.md` — mandatory: naming conventions (kebab-case, snake_case, ADR naming), wikilink format (full path required), and the checklist for creating/renaming vault files. Claude Rules for this path may not fire in sub-agent context — read it explicitly.
+- Read `docs/vault/Development/Obsidian Vault.md` — mandatory: naming conventions (kebab-case, snake_case, ADR naming), wikilink format (full path required), and the checklist for creating/renaming vault files. Claude Rules for this path may not fire in sub-agent context — read it explicitly.
 
 ---
 
@@ -47,13 +47,13 @@ Focus on **durable knowledge** — information that remains relevant after the f
 
 | What to look for                                                             | Vault destination                                               |
 | ---------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| Architectural decision (why X was chosen over Y)                             | `docs/vault/Decisiones/` — create ADR or update `Index.md`      |
-| New pattern not yet in ADRs (e.g., new auth flow, new entity lifecycle rule) | `docs/vault/Decisiones/` or `docs/vault/Desarrollo/`            |
-| Business rule or domain constraint explained in the spec                     | `docs/vault/Proyecto/PRD.md` or the relevant ADR section        |
-| Gotcha or non-obvious behavior                                               | `docs/vault/Desarrollo/Comportamientos Esperados.md`            |
-| Infrastructure or deployment decision                                        | `docs/vault/Arquitectura/`                                      |
-| API contract decision (route, response shape, auth policy)                   | Relevant ADR in `docs/vault/Decisiones/`                        |
-| Database schema decision (new table, index rationale, FK design)             | `docs/vault/Arquitectura/` or relevant ADR                      |
+| Architectural decision (why X was chosen over Y)                             | `docs/vault/Decisions/` — create ADR or update `Index.md`      |
+| New pattern not yet in ADRs (e.g., new auth flow, new entity lifecycle rule) | `docs/vault/Decisions/` or `docs/vault/Development/`            |
+| Business rule or domain constraint explained in the spec                     | `docs/vault/Project/PRD.md` or the relevant ADR section        |
+| Gotcha or non-obvious behavior                                               | `docs/vault/Development/Expected Behaviors.md`            |
+| Infrastructure or deployment decision                                        | `docs/vault/Architecture/`                                      |
+| API contract decision (route, response shape, auth policy)                   | Relevant ADR in `docs/vault/Decisions/`                        |
+| Database schema decision (new table, index rationale, FK design)             | `docs/vault/Architecture/` or relevant ADR                      |
 | Pure implementation steps without decisions                                  | Discard — the code captures the how; the vault captures the why |
 
 **High-value signals in a spec (English and Spanish):**
@@ -75,7 +75,7 @@ For each classified item:
 3. **Create new documents** only when no existing document covers the topic.
 4. **Apply bidirectional Obsidian links** (`[[Section/Document]]`) — new notes must link to related docs, and related docs must link back.
 5. **Language:** maintain the vault's established language (check existing vault documents).
-6. **Placement:** always use full path relative to vault root (e.g., `[[Decisiones/ADR - Security]]`).
+6. **Placement:** always use full path relative to vault root (e.g., `[[Decisions/ADR - Security]]`).
 
 ---
 
@@ -84,7 +84,7 @@ For each classified item:
 If new vault documents were created:
 
 - Add entry to `docs/vault/Home.md` in the correct section.
-- Add entry to `docs/vault/Decisiones/Index.md` if a decision was recorded.
+- Add entry to `docs/vault/Decisions/Index.md` if a decision was recorded.
 - Evaluate if `.claude/commands/conditional-docs.md` needs a new condition (only when the new document should be read before touching specific files/paths).
 
 ---
@@ -105,7 +105,7 @@ Skills live in `.claude/skills/<name>/SKILL.md`. They are the authoritative impl
 **When NOT to update a skill:**
 
 - The knowledge is purely business/domain-specific (→ vault ADR or PRD).
-- The knowledge is infrastructure/deployment (→ `docs/vault/Arquitectura/`).
+- The knowledge is infrastructure/deployment (→ `docs/vault/Architecture/`).
 - The pattern is already documented in the skill — always `Grep` the `SKILL.md` before writing.
 
 **How to update:**

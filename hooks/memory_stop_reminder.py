@@ -5,15 +5,15 @@
 # ///
 
 """
-Stop hook — inyecta un recordatorio para registrar decisiones, errores y
-aprendizajes en memory/daily/ antes de terminar la sesión.
+Stop hook — injects a reminder to record decisions, errors, and learnings
+in memory/daily/ before ending the session.
 
-Si ya existe un archivo de sesión en memory/daily/, el recordatorio pide
-actualizarlo. Si no existe, detecta si hubo cambios git para determinar
-si la sesión fue no trivial — en ese caso el recordatorio es imperativo.
+If a session file already exists in memory/daily/, the reminder asks to
+update it. If none exists, detects git changes to determine whether the
+session was non-trivial — in that case the reminder is imperative.
 
-El JSON impreso en stdout se inyecta como systemMessage al finalizar
-la respuesta (comportamiento de Claude Code Stop hooks).
+The JSON printed to stdout is injected as systemMessage at the end of
+the response (Claude Code Stop hook behavior).
 """
 
 import glob
@@ -46,7 +46,7 @@ def is_git_repo(project_dir: str) -> bool:
 
 
 def has_git_changes(project_dir: str) -> bool:
-    """Detecta si hubo cambios en el worktree (staged, unstaged o untracked)."""
+    """Detects changes in the worktree (staged, unstaged, or untracked)."""
     try:
         result = subprocess.run(
             ["git", "status", "--porcelain"],
@@ -65,8 +65,8 @@ def main():
     if not project_dir:
         message = (
             "<memory-stop-reminder>"
-            "OBLIGATORIO si hubo trabajo no trivial: crear memory/daily/YYYY-MM-DD_HHMMSS.md "
-            "con topic, Contexto, Decisiones, Errores y correcciones, Aprendizajes, Referencias."
+            "MANDATORY if there was non-trivial work: create memory/daily/YYYY-MM-DD_HHMMSS.md "
+            "with topic, Context, Decisions, Errors and corrections, Learnings, References."
             "</memory-stop-reminder>"
         )
         print(json.dumps({"systemMessage": message}))
@@ -79,9 +79,9 @@ def main():
     if existing_files:
         message = (
             "<memory-stop-reminder>"
-            "Hay un archivo de sesión activo en memory/daily/. "
-            "Actualizar ahora las secciones que correspondan: "
-            "Decisiones, Errores y correcciones, Aprendizajes, Referencias."
+            "There is an active session file in memory/daily/. "
+            "Update the relevant sections now: "
+            "Decisions, Errors and corrections, Learnings, References."
             "</memory-stop-reminder>"
         )
     else:
@@ -93,17 +93,17 @@ def main():
         if git_changed:
             message = (
                 "<memory-stop-reminder>"
-                "ATENCIÓN: se modificaron archivos en esta sesión pero NO existe memory/daily/. "
-                "Crear AHORA memory/daily/YYYY-MM-DD_HHMMSS.md con topic, Contexto, "
-                "Decisiones, Errores y correcciones, Aprendizajes y Referencias. "
-                "No omitir — es obligatorio cuando hay trabajo no trivial."
+                "WARNING: files were modified in this session but memory/daily/ does NOT exist. "
+                "Create NOW memory/daily/YYYY-MM-DD_HHMMSS.md with topic, Context, "
+                "Decisions, Errors and corrections, Learnings, and References. "
+                "Do not skip — mandatory when there was non-trivial work."
                 "</memory-stop-reminder>"
             )
         else:
             message = (
                 "<memory-stop-reminder>"
-                "Si hubo decisiones, errores o aprendizajes en esta sesión (aunque no haya "
-                "archivos modificados), crear memory/daily/YYYY-MM-DD_HHMMSS.md según memory.md."
+                "If there were decisions, errors, or learnings in this session (even if no "
+                "files were modified), create memory/daily/YYYY-MM-DD_HHMMSS.md as per memory.md."
                 "</memory-stop-reminder>"
             )
 

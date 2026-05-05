@@ -23,10 +23,10 @@ echo ""
 # Create directories
 mkdir -p "$TARGET/memory/daily"
 mkdir -p "$TARGET/docs/vault/Claude"
-mkdir -p "$TARGET/docs/vault/Decisiones"
-mkdir -p "$TARGET/docs/vault/Arquitectura"
-mkdir -p "$TARGET/docs/vault/Desarrollo"
-mkdir -p "$TARGET/docs/vault/Proyecto"
+mkdir -p "$TARGET/docs/vault/Decisions"
+mkdir -p "$TARGET/docs/vault/Architecture"
+mkdir -p "$TARGET/docs/vault/Development"
+mkdir -p "$TARGET/docs/vault/Project"
 mkdir -p "$TARGET/.claude/commands"
 mkdir -p "$TARGET/.claude/agents"
 mkdir -p "$TARGET/.claude/rules"
@@ -51,9 +51,9 @@ copy_if_missing() {
 
 copy_if_missing "$PLUGIN_DIR/docs/vault/Home.md"                          "$TARGET/docs/vault/Home.md"
 copy_if_missing "$PLUGIN_DIR/docs/vault/Claude/Memory.md"                 "$TARGET/docs/vault/Claude/Memory.md"
-copy_if_missing "$PLUGIN_DIR/docs/vault/Decisiones/Index.md"              "$TARGET/docs/vault/Decisiones/Index.md"
-copy_if_missing "$PLUGIN_DIR/docs/vault/Desarrollo/Obsidian Vault.md"     "$TARGET/docs/vault/Desarrollo/Obsidian Vault.md"
-copy_if_missing "$PLUGIN_DIR/docs/vault/Desarrollo/Comportamientos Esperados.md" "$TARGET/docs/vault/Desarrollo/Comportamientos Esperados.md"
+copy_if_missing "$PLUGIN_DIR/docs/vault/Decisions/Index.md"               "$TARGET/docs/vault/Decisions/Index.md"
+copy_if_missing "$PLUGIN_DIR/docs/vault/Development/Obsidian Vault.md"    "$TARGET/docs/vault/Development/Obsidian Vault.md"
+copy_if_missing "$PLUGIN_DIR/docs/vault/Development/Expected Behaviors.md" "$TARGET/docs/vault/Development/Expected Behaviors.md"
 
 # Copy Claude commands
 echo "→ Copying .claude/commands/"

@@ -9,4 +9,4 @@ paths:
 
 Before creating, modifying, renaming, or moving any file in `docs/vault/`, read:
 
-- `docs/vault/Desarrollo/Obsidian Vault.md` — naming conventions, wikilinks, disambiguation, and checklist.
+- `docs/vault/Development/Obsidian Vault.md` — naming conventions, wikilinks, disambiguation, and checklist.

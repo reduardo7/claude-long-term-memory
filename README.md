@@ -95,9 +95,9 @@ touch ./memory/daily/.gitkeep
 
 cp /path/to/claude-long-term-memory/docs/vault/Home.md                            ./docs/vault/Home.md
 cp /path/to/claude-long-term-memory/docs/vault/Claude/Memory.md                   ./docs/vault/Claude/Memory.md
-cp /path/to/claude-long-term-memory/docs/vault/Decisiones/Index.md                ./docs/vault/Decisiones/Index.md
-cp "/path/to/claude-long-term-memory/docs/vault/Desarrollo/Obsidian Vault.md"     "./docs/vault/Desarrollo/Obsidian Vault.md"
-cp "/path/to/claude-long-term-memory/docs/vault/Desarrollo/Comportamientos Esperados.md" "./docs/vault/Desarrollo/Comportamientos Esperados.md"
+cp /path/to/claude-long-term-memory/docs/vault/Decisions/Index.md                 ./docs/vault/Decisions/Index.md
+cp "/path/to/claude-long-term-memory/docs/vault/Development/Obsidian Vault.md"    "./docs/vault/Development/Obsidian Vault.md"
+cp "/path/to/claude-long-term-memory/docs/vault/Development/Expected Behaviors.md" "./docs/vault/Development/Expected Behaviors.md"
 
 cp /path/to/claude-long-term-memory/.claude/commands/memory-digest.md             ./.claude/commands/memory-digest.md
 cp /path/to/claude-long-term-memory/.claude/commands/conditional-docs.md          ./.claude/commands/conditional-docs.md
@@ -204,8 +204,8 @@ Hooks use `uv run` by default. To use plain `python3` instead, replace `uv run` 
 | `memory/daily/*.md`                              | Raw session logs — ephemeral, deleted after `/memory-digest`                 |
 | `docs/vault/Home.md`                             | Vault master index — update as vault grows                                   |
 | `docs/vault/Claude/Memory.md`                    | Memory system documentation in the vault                                     |
-| `docs/vault/Decisiones/Index.md`                 | ADR index — updated after every architectural decision                       |
-| `docs/vault/Desarrollo/Obsidian Vault.md`        | Vault writing conventions (naming, wikilinks)                                |
+| `docs/vault/Decisions/Index.md`                 | ADR index — updated after every architectural decision                       |
+| `docs/vault/Development/Obsidian Vault.md`        | Vault writing conventions (naming, wikilinks)                                |
 | `.claude/commands/memory-digest.md`              | `/memory-digest` slash command (legacy format)                               |
 | `.claude/commands/conditional-docs.md`           | Maps task types to vault documents — customize per project                   |
 | `.claude/agents/memory-digest-daily.md`          | Sub-agent: distills one daily log → vault + skills                           |

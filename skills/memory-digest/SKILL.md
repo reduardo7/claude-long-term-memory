@@ -28,7 +28,7 @@ Convert raw session notes and implementation specs into curated, linked, and per
 
 ### 2. Process each log with a sub-agent
 
-Process **one at a time** (sequential) to avoid write conflicts in the same vault documents (e.g., `Decisiones/Index.md`, `Home.md`):
+Process **one at a time** (sequential) to avoid write conflicts in the same vault documents (e.g., `Decisions/Index.md`, `Home.md`):
 
 1. For each file (in chronological order): launch the **`memory-digest-daily`** sub-agent passing the absolute path as input. Wait for its result before continuing to the next.
 2. If the sub-agent reports success: **delete** the corresponding `memory/daily/<ts>.md` file.

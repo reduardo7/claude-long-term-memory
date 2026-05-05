@@ -63,7 +63,7 @@ Work session → memory/daily/YYYY-MM-DD_HHMMSS.md   (raw log)
 | `.claude/agents/memory-digest-spec.md` | Sub-agent: distills one spec → vault (uses Sonnet) |
 | `.claude/agents/memory-search.md` | Sub-agent: retrieves vault docs before tasks (uses Haiku) |
 | `docs/vault/Home.md` | Vault master index — customize per target project |
-| `docs/vault/Decisiones/Index.md` | ADR registry with next ADR number |
+| `docs/vault/Decisions/Index.md` | ADR registry with next ADR number |
 | `specs/digested.txt` | Registry of already-processed spec files |
 | `install.sh` | Bootstrap script — creates directories and copies files into target project |
 
@@ -84,7 +84,7 @@ Seven Python hooks fire on Claude Code events:
 
 ### `/memory-digest` Pipeline
 
-Processes files **sequentially** (not in parallel) to avoid write conflicts in shared vault documents like `Decisiones/Index.md`:
+Processes files **sequentially** (not in parallel) to avoid write conflicts in shared vault documents like `Decisions/Index.md`:
 
 1. Find all `memory/daily/*.md` → run `memory-digest-daily` for each → delete on success
 2. Find all `specs/*.md` not in `specs/digested.txt` → run `memory-digest-spec` for each → append to `digested.txt` on success

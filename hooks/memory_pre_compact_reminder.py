@@ -47,27 +47,27 @@ def main():
     if existing:
         message = (
             "<memory-pre-compact-reminder>"
-            "ANTES DEL COMPACTADO: actualizar ahora memory/daily/ con todo lo relevante "
-            "de esta sesión — Decisiones, Errores y correcciones, Aprendizajes, Referencias. "
-            "El compactado descartará el historial de conversación; lo que no esté en el "
-            "archivo de sesión se perderá permanentemente."
+            "BEFORE COMPACTION: update memory/daily/ now with everything relevant "
+            "from this session — Decisions, Errors and corrections, Learnings, References. "
+            "Compaction will discard the conversation history; anything not in the "
+            "session file will be permanently lost."
             "</memory-pre-compact-reminder>"
         )
     elif project_dir and has_git_changes(project_dir):
         message = (
             "<memory-pre-compact-reminder>"
-            "ANTES DEL COMPACTADO: se modificaron archivos en esta sesión pero no existe "
-            "memory/daily/. Crear AHORA memory/daily/YYYY-MM-DD_HHMMSS.md con topic, "
-            "Contexto, Decisiones, Errores y correcciones, Aprendizajes y Referencias. "
-            "El compactado descartará el historial — guardar antes de que se pierda."
+            "BEFORE COMPACTION: files were modified in this session but memory/daily/ does not exist. "
+            "Create NOW memory/daily/YYYY-MM-DD_HHMMSS.md with topic, "
+            "Context, Decisions, Errors and corrections, Learnings, and References. "
+            "Compaction will discard the history — save before it is lost."
             "</memory-pre-compact-reminder>"
         )
     else:
         message = (
             "<memory-pre-compact-reminder>"
-            "ANTES DEL COMPACTADO: si hubo decisiones, errores o aprendizajes en esta sesión, "
-            "crear memory/daily/YYYY-MM-DD_HHMMSS.md ahora (ver memory/memory.md). "
-            "El compactado descartará el historial de conversación."
+            "BEFORE COMPACTION: if there were decisions, errors, or learnings in this session, "
+            "create memory/daily/YYYY-MM-DD_HHMMSS.md now (see memory/memory.md). "
+            "Compaction will discard the conversation history."
             "</memory-pre-compact-reminder>"
         )
 

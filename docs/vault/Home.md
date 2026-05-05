@@ -12,7 +12,7 @@ Master content map. Open this vault from `docs/vault/` in Obsidian.
 
 | Note | Description |
 |------|-------------|
-| [[Proyecto/PRD]] | Product Requirements Document — objectives, business rules, flows |
+| [[Project/PRD]] | Product Requirements Document — objectives, business rules, flows |
 
 ---
 
@@ -20,7 +20,7 @@ Master content map. Open this vault from `docs/vault/` in Obsidian.
 
 | Note | Description |
 |------|-------------|
-| [[Arquitectura/Project Structure]] | Repositories, layers, APIs, infrastructure |
+| [[Architecture/Project Structure]] | Repositories, layers, APIs, infrastructure |
 
 ---
 
@@ -30,7 +30,7 @@ Master content map. Open this vault from `docs/vault/` in Obsidian.
 
 | Note | Scope |
 |------|-------|
-| [[Decisiones/Index]] | Master table of all ADRs with number, section, and link |
+| [[Decisions/Index]] | Master table of all ADRs with number, section, and link |
 
 > Next ADR: **ADR-001**
 
@@ -40,8 +40,8 @@ Master content map. Open this vault from `docs/vault/` in Obsidian.
 
 | Note | Description |
 |------|-------------|
-| [[Desarrollo/Obsidian Vault]] | Vault writing rules and naming conventions |
-| [[Desarrollo/Comportamientos Esperados]] | Intentional design decisions that are NOT bugs |
+| [[Development/Obsidian Vault]] | Vault writing rules and naming conventions |
+| [[Development/Expected Behaviors]] | Intentional design decisions that are NOT bugs |
 
 ---
 
@@ -58,7 +58,7 @@ Master content map. Open this vault from `docs/vault/` in Obsidian.
 | Source | Role |
 |--------|------|
 | **CLAUDE.md** | Absolute rules and source of truth — the *what* and the *why* |
-| **`docs/vault/Decisiones/Index.md`** | ADR index. Consult before implementing; update when completing features |
+| **`docs/vault/Decisions/Index.md`** | ADR index. Consult before implementing; update when completing features |
 | **`docs/vault/Home.md`** | This file — master map of all vault content |
 
 ---

@@ -27,7 +27,7 @@ Read ALL of these before doing anything else:
 1. **`docs/vault/Home.md`** — Master vault index. Contains the complete structure of all vault sections with descriptions for each document. **Use this as the authoritative map to identify which documents are relevant to the task.**
 2. **`.claude/commands/conditional-docs.md`** — Reading conditions by context: maps task types to documents and skills. Cross-check against `Home.md` to confirm relevance. (Read only if it exists in the project.)
 3. **`memory/daily/`** — Scan for recent session logs (use Glob `memory/daily/*.md`). Files are named `YYYY-MM-DD_HHMMSS.md` — compare the date prefix of each filename to today's date to determine age. Read any files from the last 7 days — they contain non-obvious decisions, corrections, and discoveries not yet promoted to the vault.
-4. **`docs/vault/Decisiones/Index.md`** — Mandatory for any feature or architectural work. Lists all existing decisions that must be respected.
+4. **`docs/vault/Decisions/Index.md`** — Mandatory for any feature or architectural work. Lists all existing decisions that must be respected.
 
 ## Step 2 — Task-Specific Vault Documents
 
@@ -51,7 +51,7 @@ Use `Grep` to search within `docs/vault/` for the key terms of the task (entity 
 
 ## File Reading Rules
 
-- Construct paths from `$CLAUDE_PROJECT_DIR`. Example: `$CLAUDE_PROJECT_DIR/docs/vault/Decisiones/Index.md`
+- Construct paths from `$CLAUDE_PROJECT_DIR`. Example: `$CLAUDE_PROJECT_DIR/docs/vault/Decisions/Index.md`
 - If a file doesn't exist at the expected path, search with Glob for similar filenames.
 - Read the complete content of each relevant file — do not truncate.
 - If a document is an index (contains a table of contents or links list), follow all links in it.
@@ -68,7 +68,7 @@ Use `Grep` to search within `docs/vault/` for the key terms of the task (entity 
 [Relevant entries from recent daily logs — decisions, corrections, discoveries related to this task. "No recent relevant entries" if none.]
 
 ### Relevant Existing Decisions
-[Entries from Decisiones/Index.md relevant to this task. "No prior decisions found" if none.]
+[Entries from Decisions/Index.md relevant to this task. "No prior decisions found" if none.]
 
 ### Documentation Content
 
@@ -96,7 +96,7 @@ Use `Grep` to search within `docs/vault/` for the key terms of the task (entity 
 - You do NOT make recommendations or decisions.
 - You do NOT summarize or paraphrase documentation — return full content.
 - You do NOT skip documents because they seem long — completeness is required.
-- You always read the 3 mandatory entry points regardless of the task (Home.md, recent daily logs, Decisiones/Index.md — plus conditional-docs.md if it exists).
+- You always read the 3 mandatory entry points regardless of the task (Home.md, recent daily logs, Decisions/Index.md — plus conditional-docs.md if it exists).
 - When in doubt about relevance, err on the side of including more documentation.
 - Use `Grep` to search within vault files when looking for specific terms, entity names, or feature references across multiple documents.
 

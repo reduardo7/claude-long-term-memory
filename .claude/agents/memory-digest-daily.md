@@ -29,9 +29,9 @@ You receive one file path as input. Process only that file.
 Before reading the session log, load the minimum vault context needed to place knowledge correctly:
 
 - Read `docs/vault/Home.md` — vault structure and section index.
-- Read `docs/vault/Decisiones/Index.md` — existing ADRs (avoid duplicates, find the next ADR number).
+- Read `docs/vault/Decisions/Index.md` — existing ADRs (avoid duplicates, find the next ADR number).
 - Read `.claude/commands/conditional-docs.md` — to know which docs to update if new conditional reading rules are needed.
-- Read `docs/vault/Desarrollo/Obsidian Vault.md` — mandatory: naming conventions (kebab-case, snake_case, ADR naming), wikilink format (full path required), and the checklist for creating/renaming vault files. Claude Rules for this path may not fire in sub-agent context — read it explicitly.
+- Read `docs/vault/Development/Obsidian Vault.md` — mandatory: naming conventions (kebab-case, snake_case, ADR naming), wikilink format (full path required), and the checklist for creating/renaming vault files. Claude Rules for this path may not fire in sub-agent context — read it explicitly.
 
 ---
 
@@ -47,13 +47,13 @@ For each piece of information in the log, classify it:
 
 | Category                                            | Vault destination                                           |
 | --------------------------------------------------- | ----------------------------------------------------------- |
-| Architectural/technical decision not yet in ADRs    | `docs/vault/Decisiones/` — create ADR or update `Index.md`  |
-| New code pattern or convention                      | Relevant skill file or `docs/vault/Desarrollo/`             |
-| Infrastructure/architecture finding                 | `docs/vault/Arquitectura/`                                  |
-| Gotcha / expected behavior not yet documented       | `docs/vault/Desarrollo/Comportamientos Esperados.md`        |
+| Architectural/technical decision not yet in ADRs    | `docs/vault/Decisions/` — create ADR or update `Index.md`  |
+| New code pattern or convention                      | Relevant skill file or `docs/vault/Development/`             |
+| Infrastructure/architecture finding                 | `docs/vault/Architecture/`                                  |
+| Gotcha / expected behavior not yet documented       | `docs/vault/Development/Expected Behaviors.md`        |
 | New script, tool, or integration                    | Corresponding vault section + `Home.md`                     |
 | Anti-pattern or recurring mistake                   | Relevant skill (`.claude/skills/*/SKILL.md`)                |
-| Agent error + user correction → new rule/convention | Evaluate: `CLAUDE.md`, a skill, or `docs/vault/Desarrollo/` |
+| Agent error + user correction → new rule/convention | Evaluate: `CLAUDE.md`, a skill, or `docs/vault/Development/` |
 | Trivial or already documented                       | Discard                                                     |
 
 ---
@@ -69,7 +69,7 @@ For each classified item:
 3. **Create new documents** only when no existing document covers the topic.
 4. **Apply bidirectional Obsidian links** (`[[Section/Document]]`) — new notes must link to related documents, and related documents must link back.
 5. **Language:** maintain the vault's established language (check existing vault documents for the language convention — typically whatever language is already in use in the vault).
-6. **Placement:** always use full path relative to vault root (e.g., `[[Decisiones/ADR - Security]]`), not bare filenames.
+6. **Placement:** always use full path relative to vault root (e.g., `[[Decisions/ADR - Security]]`), not bare filenames.
 
 ---
 
@@ -78,7 +78,7 @@ For each classified item:
 If new vault documents were created:
 
 - Add entry to `docs/vault/Home.md` in the correct section.
-- Add entry to `docs/vault/Decisiones/Index.md` if a decision was recorded.
+- Add entry to `docs/vault/Decisions/Index.md` if a decision was recorded.
 - Evaluate if `.claude/commands/conditional-docs.md` needs a new condition (only when the new document should be read before touching specific files/paths).
 
 ---
@@ -99,7 +99,7 @@ Skills live in `.claude/skills/<name>/SKILL.md`. They are the authoritative impl
 **When NOT to update a skill:**
 
 - The knowledge is purely business/domain-specific (→ vault ADR or PRD).
-- The knowledge is infrastructure/deployment (→ `docs/vault/Arquitectura/`).
+- The knowledge is infrastructure/deployment (→ `docs/vault/Architecture/`).
 - The pattern is already documented in the skill — always `Grep` the `SKILL.md` before writing.
 
 **How to update:**

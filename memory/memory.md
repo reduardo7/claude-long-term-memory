@@ -62,7 +62,7 @@ Four hooks complement the activation system:
 Agent(subagent_type: "memory-search", prompt: "<task description>")
 ```
 
-The agent reads `docs/vault/Home.md`, `conditional-docs.md` (if it exists), recent daily logs, and `Decisiones/Index.md` — then follows all relevant cross-references in the vault. Returns the full content of each document — without summarizing or paraphrasing.
+The agent reads `docs/vault/Home.md`, `conditional-docs.md` (if it exists), recent daily logs, and `Decisions/Index.md` — then follows all relevant cross-references in the vault. Returns the full content of each document — without summarizing or paraphrasing.
 
 **When it is mandatory:**
 

@@ -30,7 +30,7 @@ This guide determines which documentation to read based on the task at hand. Rev
 
 ## Vault conventions
 
-- `docs/vault/Desarrollo/Obsidian Vault.md`
+- `docs/vault/Development/Obsidian Vault.md`
   - Conditions:
     - When creating or renaming vault documents
     - When adding wikilinks between vault documents
@@ -46,7 +46,7 @@ This guide determines which documentation to read based on the task at hand. Rev
 
 ## Architecture and decisions
 
-- `docs/vault/Decisiones/Index.md`
+- `docs/vault/Decisions/Index.md`
   - Conditions:
     - Before creating a new ADR (to avoid duplicates and get the next number)
     - When implementing a feature that may have existing architectural decisions

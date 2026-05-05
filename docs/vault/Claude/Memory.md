@@ -6,7 +6,7 @@ tags: [claude, memory, vault, knowledge, log, digest]
 
 System for capturing and distilling knowledge per session. Converts raw session notes and implementation specs into curated, permanent knowledge inside the vault.
 
-See also: [[Desarrollo/Obsidian Vault]] | [[Decisiones/Index]]
+See also: [[Development/Obsidian Vault]] | [[Decisions/Index]]
 
 ---
 
@@ -134,7 +134,7 @@ topic: <main topic, one line>
 4. If the sub-agent confirms success: appends the basename to the end of `specs/digested.txt`.
 5. If it fails: does not record in `digested.txt` — will retry on next execution.
 
-**Sequential processing is mandatory** — one file at a time to avoid write conflicts in the same vault documents (e.g., `Decisiones/Index.md`, `Home.md`). Claude Rules are created by the sub-agents directly in their Step 7; the orchestrator does not create them.
+**Sequential processing is mandatory** — one file at a time to avoid write conflicts in the same vault documents (e.g., `Decisions/Index.md`, `Home.md`). Claude Rules are created by the sub-agents directly in their Step 7; the orchestrator does not create them.
 
 ---
 
@@ -146,11 +146,11 @@ topic: <main topic, one line>
 
 Internal steps:
 
-1. Loads minimum vault context (`Home.md`, `Decisiones/Index.md`, `conditional-docs.md` if it exists).
+1. Loads minimum vault context (`Home.md`, `Decisions/Index.md`, `conditional-docs.md` if it exists).
 2. Reads the session file in full.
 3. Classifies each entry according to the destination table.
 4. Writes or updates documents in the vault (with bidirectional links, without duplicating).
-5. Updates `Home.md`, `Decisiones/Index.md`, and `conditional-docs.md` if there are new documents.
+5. Updates `Home.md`, `Decisions/Index.md`, and `conditional-docs.md` if there are new documents.
 6. Evaluates whether any new document requires a Claude Rule in `.claude/rules/`.
 7. Returns structured report to the orchestrator.
 
@@ -166,7 +166,7 @@ Internal steps:
 
 Internal steps:
 
-1. Loads minimum vault context (`Home.md`, `Decisiones/Index.md`, `conditional-docs.md` if it exists).
+1. Loads minimum vault context (`Home.md`, `Decisions/Index.md`, `conditional-docs.md` if it exists).
 2. Reads the spec in full.
 3. Extracts **only durable knowledge** — discards purely procedural steps.
 4. Classifies and writes to the vault (same rules as `memory-digest-daily`).
@@ -188,7 +188,7 @@ Before executing non-trivial tasks (implementing features, changing architecture
 1. `docs/vault/Home.md`
 2. `.claude/commands/conditional-docs.md` (if it exists)
 3. Recent daily logs (`memory/daily/`) — filenames use format `YYYY-MM-DD_HHMMSS.md`; compare the date prefix to today's date to determine which files are from the last 7 days
-4. `docs/vault/Decisiones/Index.md`
+4. `docs/vault/Decisions/Index.md`
 
 ---
 
@@ -220,7 +220,7 @@ The memory system requires **3 complementary activation components** — all thr
 ## Implementation notes
 
 - **Claude Rules without `paths:` are not guaranteed**: a rule in `.claude/rules/` without `paths:` frontmatter does not have guaranteed load behavior. For instructions that must apply globally in every session, use `CLAUDE.md` (always loaded) instead of a global rule.
-- **Claude Rules with `paths:` may not load in sub-agent contexts**: when an agent launches sub-agents (e.g., `/memory-digest` → `memory-digest-daily`), Claude Rules with `paths:` may not fire in the sub-agent's context even if the sub-agent touches matching files. Solution: add explicit reads of critical documents in the sub-agent's Step 1 rather than relying solely on Rules. Example: `memory-digest-daily` explicitly reads `docs/vault/Desarrollo/Obsidian Vault.md` because the `obsidian-vault.md` rule (with `paths: ["docs/vault/**/*"]`) may not fire.
+- **Claude Rules with `paths:` may not load in sub-agent contexts**: when an agent launches sub-agents (e.g., `/memory-digest` → `memory-digest-daily`), Claude Rules with `paths:` may not fire in the sub-agent's context even if the sub-agent touches matching files. Solution: add explicit reads of critical documents in the sub-agent's Step 1 rather than relying solely on Rules. Example: `memory-digest-daily` explicitly reads `docs/vault/Development/Obsidian Vault.md` because the `obsidian-vault.md` rule (with `paths: ["docs/vault/**/*"]`) may not fire.
 - **Immediate triggers, not "during the session"**: the instruction to update the log must specify the exact moment (post-decision, post-correction, post-learning). A generic instruction like "record during the session" causes Claude to create the file and never touch it again.
 - **Hooks: Python instead of `printf` in shell**: `printf` with `\n` may fail on Windows. Hooks should use Python scripts (no external dependencies) for cross-platform compatibility.
 - **Claude Rules with broad scope are dangerous**: a rule with `paths: ["docs/vault/**/*"]` fires on every vault file. If the message is specific to a subsystem (e.g., memory), the scope must reflect only that subsystem's paths. Broad scope = unnecessary noise in context.
